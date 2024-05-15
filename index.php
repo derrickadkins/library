@@ -1,3 +1,15 @@
+<?php
+session_start();
+if (isset($_SESSION['email'])) {
+  if($_SESSION['admin']){
+    header("Location: admin.php");
+    exit();
+  }else{
+    header("Location: dashboard.php");
+    exit();
+  }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -20,7 +32,7 @@
             <div class="card-body">
               <form action="php/login.php" method="POST">
                 <div class="form-group">
-                  <label for="email">Email:</label>
+                  <label for="email">Email</label>
                   <input
                     type="email"
                     id="email"
@@ -30,7 +42,7 @@
                   />
                 </div>
                 <div class="form-group">
-                  <label for="password">Password:</label>
+                  <label for="password">Password</label>
                   <input
                     type="password"
                     id="password"
