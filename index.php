@@ -30,6 +30,7 @@ if (isset($_SESSION['email'])) {
               <h2>Welcome to the Library System</h2>
             </div>
             <div class="card-body">
+              <div id="error" class="alert alert-danger" role="alert" style="display: none;"></div>
               <form action="php/login.php" method="POST">
                 <div class="form-group">
                   <label for="email">Email</label>
@@ -64,4 +65,35 @@ if (isset($_SESSION['email'])) {
       </div>
     </div>
   </body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+  $("form").on("submit", function(event){
+    event.preventDefault();
+
+    $.ajax({
+      url: 'php/login.php',
+      type: 'post',
+      data: $(this).serialize(),
+      success: function(response){
+        // handle the response from the server
+        console.log(response);
+        if (response.trim() == "admin") {
+          window.location.href = "admin.php";
+        } else if (response.trim() == "member") {
+          window.location.href = "dashboard.php";
+        } else {
+          // display the error message
+          $("#error").html(response).show();
+        }
+      },
+      error: function(jqXHR, textStatus, errorThrown){
+        // handle any errors
+        console.error(textStatus, errorThrown);
+      }
+    });
+  });
+});
+</script>
 </html>

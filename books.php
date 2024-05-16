@@ -28,21 +28,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['checkout'])) {
     }
 }
 
-// Fetch books and their availability
-$books_sql = "
-    SELECT Books.*, LatestCheckouts.CheckedInDate IS NULL AS CheckedOut
-    FROM Books
-    LEFT JOIN (
-        SELECT Checkouts.BookID, Checkouts.CheckedInDate
-        FROM Checkouts
-        INNER JOIN (
-            SELECT BookID, MAX(CheckedOutDate) as MaxCheckedOutDate
-            FROM Checkouts
-            GROUP BY BookID
-        ) as MaxCheckouts ON Checkouts.BookID = MaxCheckouts.BookID AND Checkouts.CheckedOutDate = MaxCheckouts.MaxCheckedOutDate
-    ) as LatestCheckouts ON Books.BookID = LatestCheckouts.BookID
-";
-$books_result = $conn->query($books_sql);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -67,22 +52,9 @@ $books_result = $conn->query($books_sql);
                 </tr>
             </thead>
             <tbody>
-                <?php while ($book = $books_result->fetch_assoc()): ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($book['Author']); ?></td>
-                        <td><?php echo htmlspecialchars($book['Title']); ?></td>
-                        <td><?php echo htmlspecialchars($book['ISBN']); ?></td>
-                        <td><?php echo $book['CheckedOut'] ? 'Checked Out' : 'Available'; ?></td>
-                        <td>
-                            <?php if (!$book['CheckedOut']): ?>
-                                <form action="books.php" method="POST">
-                                    <input type="hidden" name="book_id" value="<?php echo $book['BookID']; ?>">
-                                    <button type="submit" name="checkout" class="btn btn-primary">Check Out</button>
-                                </form>
-                            <?php endif; ?>
-                        </td>
-                    </tr>
-                <?php endwhile; ?>
+                <tr id="loadingMessage">
+                    <td colspan="5">Loading books...</td>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -90,4 +62,41 @@ $books_result = $conn->query($books_sql);
         <p>© 2024 Library. All rights reserved.</p>
     </footer>
 </body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $.ajax({
+            url: 'php/getBooks.php',
+            type: 'GET',
+            dataType: 'json',
+            success: function(books) {
+                console.log(books);
+                var tbody = $("tbody");
+                tbody.empty();
+    
+                $.each(books, function(i, book) {
+                    var tr = $("<tr>");
+                    tr.append($("<td>").text(book.Author));
+                    tr.append($("<td>").text(book.Title));
+                    tr.append($("<td>").text(book.ISBN));
+                    tr.append($("<td>").text(book.CheckedOut == "1" ? 'Checked Out' : 'Available'));
+    
+                    if (book.CheckedOut == "0") {
+                        var form = $("<form>", {action: "books.php", method: "POST"});
+                        form.append($("<input>", {type: "hidden", name: "book_id", value: book.BookID}));
+                        form.append($("<button>", {type: "submit", name: "checkout", class: "btn btn-primary"}).text("Check Out"));
+                        tr.append($("<td>").append(form));
+                    } else {
+                        tr.append($("<td>"));
+                    }
+    
+                    tbody.append(tr);
+                });
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error(textStatus, errorThrown);
+            }
+        });
+    });
+</script>
 </html>

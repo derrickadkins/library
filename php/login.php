@@ -23,10 +23,12 @@ if ($result->num_rows > 0) {
         
         if ($admin_result->num_rows > 0) {
             $_SESSION['admin'] = true;
-            header('Location: ../admin.php');
+            // header('Location: ../admin.php');
+            echo "admin";
         } else {
             $_SESSION['admin'] = false;
-            header('Location: ../dashboard.php');
+            // header('Location: ../dashboard.php');
+            echo "member";
         }
     } else {
         echo "Invalid password.";
