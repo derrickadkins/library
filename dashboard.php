@@ -22,6 +22,7 @@ $member = $member_result->fetch_assoc();
     <title>Member Dashboard</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.25/datatables.min.css"/>
 </head>
 <body>
     <?php include "util/nav.php"; ?>
@@ -114,112 +115,114 @@ $member = $member_result->fetch_assoc();
     <footer class="bg-dark text-white text-center p-3 mt-5">
         <p>© 2024 Library. All rights reserved.</p>
     </footer>
+    <script>
+    $(document).ready(function() {
+        console.log(<?php echo json_encode($member); ?>);
+        $("#state").val("<?php echo $member['State']; ?>");
 
-</body>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script>
-$(document).ready(function() {
-    console.log(<?php echo json_encode($member); ?>);
-    $("#state").val("<?php echo $member['State']; ?>");
+        $.ajax({
+            url: 'php/getCheckedOutBooks.php',
+            type: 'GET',
+            dataType: 'json',
+            success: function(checkouts) {
+                $("tbody").empty();
+                $.each(checkouts, function(i, checkout) {
+                    var tr = $("<tr>");
+                    tr.append($("<td>").text(checkout.Title));
+                    tr.append($("<td>").text(new Date(checkout.CheckedOutDate).toLocaleDateString('en-US', {month: '2-digit', day: '2-digit', year: '2-digit'})));
+                    var dueDate = new Date(new Date(checkout.CheckedOutDate).setDate(new Date(checkout.CheckedOutDate).getDate() + 7));
+                    tr.append($("<td>").text(dueDate.toLocaleDateString('en-US', {month: '2-digit', day: '2-digit', year: '2-digit'})));
 
-    $.ajax({
-        url: 'php/getCheckedOutBooks.php',
-        type: 'GET',
-        dataType: 'json',
-        success: function(checkouts) {
-            $("tbody").empty();
-            $.each(checkouts, function(i, checkout) {
-                var tr = $("<tr>");
-                tr.append($("<td>").text(checkout.Title));
-                tr.append($("<td>").text(new Date(checkout.CheckedOutDate).toLocaleDateString('en-US', {month: '2-digit', day: '2-digit', year: '2-digit'})));
-                var dueDate = new Date(new Date(checkout.CheckedOutDate).setDate(new Date(checkout.CheckedOutDate).getDate() + 7));
-                tr.append($("<td>").text(dueDate.toLocaleDateString('en-US', {month: '2-digit', day: '2-digit', year: '2-digit'})));
-
-                var status;
-                if (checkout.CheckedInDate) {
-                    status = 'Returned on ' + new Date(checkout.CheckedInDate).toLocaleDateString('en-US', {month: '2-digit', day: '2-digit', year: '2-digit'});
-                } else {
-                    var diff = Math.ceil((dueDate - new Date()) / (1000 * 60 * 60 * 24));
-                    if (diff > 0) {
-                        status = 'Due in ' + diff + ' days';
+                    var status;
+                    if (checkout.CheckedInDate) {
+                        status = 'Returned on ' + new Date(checkout.CheckedInDate).toLocaleDateString('en-US', {month: '2-digit', day: '2-digit', year: '2-digit'});
                     } else {
-                        status = 'Overdue by ' + Math.abs(diff) + ' days';
+                        var diff = Math.ceil((dueDate - new Date()) / (1000 * 60 * 60 * 24));
+                        if (diff > 0) {
+                            status = 'Due in ' + diff + ' days';
+                        } else {
+                            status = 'Overdue by ' + Math.abs(diff) + ' days';
+                        }
                     }
-                }
-                tr.append($("<td>").text(status));
+                    tr.append($("<td>").text(status));
 
-                if (!checkout.CheckedInDate) {
-                    var form = $("<form>", {class: "checkIn"});
-                    form.append($("<input>", {type: "hidden", name: "book_id", value: checkout.BookID}));
-                    form.append($("<input>", {type: "submit", value: "Check In", class: "btn btn-primary"}));
-                    tr.append($("<td>").append(form));
-                } else {
-                    tr.append($("<td>"));
-                }
+                    if (!checkout.CheckedInDate) {
+                        var form = $("<form>", {class: "checkIn"});
+                        form.append($("<input>", {type: "hidden", name: "book_id", value: checkout.BookID}));
+                        form.append($("<input>", {type: "submit", value: "Check In", class: "btn btn-primary"}));
+                        tr.append($("<td>").append(form));
+                    } else {
+                        tr.append($("<td>"));
+                    }
 
-                $("tbody").append(tr);
-            });
+                    $("tbody").append(tr);
+                });
 
-            $("form.checkIn").on("submit", function(event){
-                event.preventDefault();
+                $("form.checkIn").on("submit", function(event){
+                    event.preventDefault();
 
-                var form = $(this);
+                    var form = $(this);
 
-                $.ajax({
-                url: 'php/checkInBook.php',
-                type: 'post',
-                data: form.serialize(),
+                    $.ajax({
+                    url: 'php/checkInBook.php',
+                    type: 'post',
+                    data: form.serialize(),
+                    success: function(response){
+                        console.log(response);
+                        if (response.trim() == "success") {
+                            form.hide();
+                            form.parent().prev().text("Returned");
+                        } else {
+                            $("#errorBooks").html(response).show();
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown){
+                        console.error(textStatus, errorThrown);
+                    }
+                    });
+                });
+
+                $("table").DataTable();
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error(textStatus, errorThrown);
+            }
+        });
+
+        $("#profileForm").on("submit", function(event){
+            event.preventDefault();
+            $.ajax({
+                url: "php/updateProfile.php",
+                type: "post",
+                data: $(this).serialize(),
                 success: function(response){
                     console.log(response);
-                    if (response.trim() == "success") {
-                        form.hide();
-                        form.parent().prev().text("Returned");
+                    if(response.trim() == "success"){
+                        $("#successProfile").show();
+                        $("#errorProfile").hide();
                     } else {
-                        $("#errorBooks").html(response).show();
+                        $("#errorProfile").html(response).show();
+                        $("#successProfile").hide();
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown){
                     console.error(textStatus, errorThrown);
                 }
-                });
-            });
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            console.error(textStatus, errorThrown);
-        }
-    });
+            })
+        });
 
-    $("#profileForm").on("submit", function(event){
-        event.preventDefault();
-        $.ajax({
-            url: "php/updateProfile.php",
-            type: "post",
-            data: $(this).serialize(),
-            success: function(response){
-                console.log(response);
-                if(response.trim() == "success"){
-                    $("#successProfile").show();
-                    $("#errorProfile").hide();
-                } else {
-                    $("#errorProfile").html(response).show();
-                    $("#successProfile").hide();
-                }
-            },
-            error: function(jqXHR, textStatus, errorThrown){
-                console.error(textStatus, errorThrown);
+        $('#toggle-password').click(function() {
+            $(this).toggleClass("fa-eye fa-eye-slash");
+            var input = $("#password");
+            if (input.attr("type") === "password") {
+                input.attr("type", "text");
+            } else {
+                input.attr("type", "password");
             }
-        })
+        });
     });
-
-    $('#toggle-password').click(function() {
-        $(this).toggleClass("fa-eye fa-eye-slash");
-        var input = $("#password");
-        if (input.attr("type") === "password") {
-            input.attr("type", "text");
-        } else {
-            input.attr("type", "password");
-        }
-    });
-});
-</script>
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.25/datatables.min.js"></script>
+</body>
 </html>

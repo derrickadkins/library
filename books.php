@@ -14,6 +14,7 @@ $name = $_SESSION['name'];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Browse Books</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.25/datatables.min.css"/>
 </head>
 <body>
     <?php include "util/nav.php"; ?>
@@ -40,67 +41,71 @@ $name = $_SESSION['name'];
     <footer class="bg-dark text-white text-center p-3 mt-5">
         <p>© 2024 Library. All rights reserved.</p>
     </footer>
-</body>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script>
-    $(document).ready(function() {
-        $.ajax({
-            url: 'php/getBooks.php',
-            type: 'GET',
-            dataType: 'json',
-            success: function(books) {
-                console.log(books);
-                var tbody = $("tbody");
-                tbody.empty();
-    
-                $.each(books, function(i, book) {
-                    var tr = $("<tr>");
-                    tr.append($("<td>").text(book.Author));
-                    tr.append($("<td>").text(book.Title));
-                    tr.append($("<td>").text(book.ISBN));
-                    
-                    if (book.CheckedOutBy) {
-                        tr.append($("<td>").text('Checked Out by ' + book.CheckedOutBy));
-                        tr.append($("<td>"));
-                    } else {
-                        tr.append($("<td>").text('Available'));
-                        var form = $("<form>");
-                        form.append($("<input>", {type: "hidden", name: "book_id", value: book.BookID}));
-                        form.append($("<button>", {type: "submit", name: "checkout", class: "btn btn-primary"}).text("Check Out"));
-                        tr.append($("<td>").append(form));
-                    }
-    
-                    tbody.append(tr);
-                });
 
-                $("form").on("submit", function(event){
-                    event.preventDefault();
-
-                    var form = $(this);
-
-                    $.ajax({
-                    url: 'php/checkoutBook.php',
-                    type: 'post',
-                    data: form.serialize(),
-                    success: function(response){
-                        console.log(response);
-                        if (response.trim() == "success") {
-                            form.hide();
-                            form.parent().prev().text("Checked Out by <?php echo $name; ?>");
+    <script>
+        $(document).ready(function() {
+            $.ajax({
+                url: 'php/getBooks.php',
+                type: 'GET',
+                dataType: 'json',
+                success: function(books) {
+                    console.log(books);
+                    var tbody = $("tbody");
+                    tbody.empty();
+        
+                    $.each(books, function(i, book) {
+                        var tr = $("<tr>");
+                        tr.append($("<td>").text(book.Author));
+                        tr.append($("<td>").text(book.Title));
+                        tr.append($("<td>").text(book.ISBN));
+                        
+                        if (book.CheckedOutBy) {
+                            tr.append($("<td>").text('Checked Out by ' + book.CheckedOutBy));
+                            tr.append($("<td>"));
                         } else {
-                            $("#error").html(response).show();
+                            tr.append($("<td>").text('Available'));
+                            var form = $("<form>");
+                            form.append($("<input>", {type: "hidden", name: "book_id", value: book.BookID}));
+                            form.append($("<button>", {type: "submit", name: "checkout", class: "btn btn-primary"}).text("Check Out"));
+                            tr.append($("<td>").append(form));
                         }
-                    },
-                    error: function(jqXHR, textStatus, errorThrown){
-                        console.error(textStatus, errorThrown);
-                    }
+        
+                        tbody.append(tr);
                     });
-                });
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.error(textStatus, errorThrown);
-            }
+
+                    $("form").on("submit", function(event){
+                        event.preventDefault();
+
+                        var form = $(this);
+
+                        $.ajax({
+                        url: 'php/checkoutBook.php',
+                        type: 'post',
+                        data: form.serialize(),
+                        success: function(response){
+                            console.log(response);
+                            if (response.trim() == "success") {
+                                form.hide();
+                                form.parent().prev().text("Checked Out by <?php echo $name; ?>");
+                            } else {
+                                $("#error").html(response).show();
+                            }
+                        },
+                        error: function(jqXHR, textStatus, errorThrown){
+                            console.error(textStatus, errorThrown);
+                        }
+                        });
+                    });
+
+                    $("table").DataTable();
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error(textStatus, errorThrown);
+                }
+            });
         });
-    });
-</script>
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.25/datatables.min.js"></script>
+</body>
 </html>
