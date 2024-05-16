@@ -3,10 +3,30 @@
 include '../db/db_connect.php';
 
 $books_sql = "
-    SELECT Books.*, CASE WHEN CheckedInDate IS NULL THEN Members.Name ELSE '' END AS CheckedOutBy
+    SELECT Books.*, 
+        CASE 
+            WHEN LatestCheckouts.PersonID IS NULL THEN ''
+            WHEN CheckedInDate IS NULL THEN Members.Name 
+            ELSE '' 
+        END AS CheckedOutBy,
+        CASE 
+            WHEN LatestCheckouts.PersonID IS NULL THEN ''
+            WHEN CheckedInDate IS NULL THEN CheckedOutDate 
+            ELSE '' 
+        END AS CheckedOutDate,
+        CASE 
+            WHEN LatestCheckouts.PersonID IS NULL THEN ''
+            WHEN CheckedInDate IS NOT NULL THEN Members.Name 
+            ELSE '' 
+        END AS CheckedInBy,
+        CASE 
+            WHEN LatestCheckouts.PersonID IS NULL THEN ''
+            WHEN CheckedInDate IS NOT NULL THEN CheckedInDate 
+            ELSE '' 
+        END AS CheckedInDate
     FROM Books
     LEFT JOIN (
-        SELECT Checkouts.BookID, Checkouts.PersonID, Checkouts.CheckedInDate
+        SELECT Checkouts.BookID, Checkouts.PersonID, Checkouts.CheckedInDate, Checkouts.CheckedOutDate
         FROM Checkouts
         INNER JOIN (
             SELECT BookID, MAX(CheckedOutDate) as MaxCheckedOutDate
