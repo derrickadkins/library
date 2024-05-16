@@ -93,7 +93,9 @@ $(document).ready(function() {
                 tr.append($("<td>").text(book.Title));
                 tr.append($("<td>").text(book.ISBN));
                 if (book.CheckedOutBy) {
-                    tr.append($("<td>").text('Checked Out by ' + book.CheckedOutBy));
+                    tr.append($("<td>").text('Checked Out by ' + book.CheckedOutBy + " on " + book.CheckedOutDate));
+                } else if (book.CheckedInBy) {
+                    tr.append($("<td>").text('Checked In by ' + book.CheckedInBy + " on " + book.CheckedInDate));
                 } else {
                     tr.append($("<td>").text('Available'));
                 }
