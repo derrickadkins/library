@@ -16,6 +16,7 @@ if ($result->num_rows > 0) {
     if (password_verify($password, $user['Password'])) {
         $_SESSION['email'] = $user['Email'];
         $_SESSION['person_id'] = $user['PersonID'];
+        $_SESSION['name'] = $user['Name'];
         
         // Check if the user is an admin
         $admin_sql = "SELECT * FROM Admins WHERE Email = '$email'";
