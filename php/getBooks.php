@@ -3,10 +3,10 @@
 include '../db/db_connect.php';
 
 $books_sql = "
-    SELECT Books.*, IF(LatestCheckouts.BookID IS NULL, 0, LatestCheckouts.CheckedInDate IS NULL) AS CheckedOut
+    SELECT Books.*, CASE WHEN CheckedInDate IS NULL THEN Members.Name ELSE '' END AS CheckedOutBy
     FROM Books
     LEFT JOIN (
-        SELECT Checkouts.BookID, Checkouts.CheckedInDate
+        SELECT Checkouts.BookID, Checkouts.PersonID, Checkouts.CheckedInDate
         FROM Checkouts
         INNER JOIN (
             SELECT BookID, MAX(CheckedOutDate) as MaxCheckedOutDate
@@ -14,6 +14,7 @@ $books_sql = "
             GROUP BY BookID
         ) as MaxCheckouts ON Checkouts.BookID = MaxCheckouts.BookID AND Checkouts.CheckedOutDate = MaxCheckouts.MaxCheckedOutDate
     ) as LatestCheckouts ON Books.BookID = LatestCheckouts.BookID
+    LEFT JOIN Members ON LatestCheckouts.PersonID = Members.PersonID
 ";
 
 $books_result = $conn->query($books_sql);

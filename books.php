@@ -4,6 +4,8 @@ if (!isset($_SESSION['email']) || $_SESSION['admin'] === true) {
     header('Location: ../index.html');
     exit();
 }
+
+$name = $_SESSION['name'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -56,15 +58,16 @@ if (!isset($_SESSION['email']) || $_SESSION['admin'] === true) {
                     tr.append($("<td>").text(book.Author));
                     tr.append($("<td>").text(book.Title));
                     tr.append($("<td>").text(book.ISBN));
-                    tr.append($("<td>").text(book.CheckedOut == "1" ? 'Checked Out' : 'Available'));
-    
-                    if (book.CheckedOut == "0") {
+                    
+                    if (book.CheckedOutBy) {
+                        tr.append($("<td>").text('Checked Out by ' + book.CheckedOutBy));
+                        tr.append($("<td>"));
+                    } else {
+                        tr.append($("<td>").text('Available'));
                         var form = $("<form>");
                         form.append($("<input>", {type: "hidden", name: "book_id", value: book.BookID}));
                         form.append($("<button>", {type: "submit", name: "checkout", class: "btn btn-primary"}).text("Check Out"));
                         tr.append($("<td>").append(form));
-                    } else {
-                        tr.append($("<td>"));
                     }
     
                     tbody.append(tr);
@@ -80,18 +83,15 @@ if (!isset($_SESSION['email']) || $_SESSION['admin'] === true) {
                     type: 'post',
                     data: form.serialize(),
                     success: function(response){
-                        // handle the response from the server
                         console.log(response);
                         if (response.trim() == "success") {
                             form.hide();
-                            form.parent().prev().text("Checked Out");
+                            form.parent().prev().text("Checked Out by <?php echo $name; ?>");
                         } else {
-                            // display the error message
                             $("#error").html(response).show();
                         }
                     },
                     error: function(jqXHR, textStatus, errorThrown){
-                        // handle any errors
                         console.error(textStatus, errorThrown);
                     }
                     });

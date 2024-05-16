@@ -92,7 +92,11 @@ $(document).ready(function() {
                 tr.append($("<td>").text(book.Author));
                 tr.append($("<td>").text(book.Title));
                 tr.append($("<td>").text(book.ISBN));
-                tr.append($("<td>").text(book.CheckedOut == "1" ? 'Checked Out' : 'Available'));
+                if (book.CheckedOutBy) {
+                    tr.append($("<td>").text('Checked Out by ' + book.CheckedOutBy));
+                } else {
+                    tr.append($("<td>").text('Available'));
+                }
 
                 var deleteForm = $("<form>", {class: "delete-book", display: "none"});
                 deleteForm.append($("<input>", {type: "hidden", name: "book_id", value: book.BookID}));
