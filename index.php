@@ -20,6 +20,7 @@ if (isset($_SESSION['email'])) {
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
     />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   </head>
   <body>
     <div class="container">
@@ -44,13 +45,20 @@ if (isset($_SESSION['email'])) {
                 </div>
                 <div class="form-group">
                   <label for="password">Password</label>
-                  <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    class="form-control"
-                    required
-                  />
+                  <div class="input-group">
+                    <input
+                      type="password"
+                      id="password"
+                      name="password"
+                      class="form-control"
+                      required
+                    />
+                    <div class="input-group-append">
+                      <span class="input-group-text">
+                        <i id="toggle-password" class="fa fa-eye" aria-hidden="true"></i>
+                      </span>
+                    </div>
+                  </div>
                 </div>
                 <div class="form-group text-center">
                   <button type="submit" class="btn btn-primary">Login</button>
@@ -93,6 +101,16 @@ $(document).ready(function(){
         console.error(textStatus, errorThrown);
       }
     });
+  });
+
+  $('#toggle-password').click(function() {
+      $(this).toggleClass("fa-eye fa-eye-slash");
+      var input = $("#password");
+      if (input.attr("type") === "password") {
+          input.attr("type", "text");
+      } else {
+          input.attr("type", "password");
+      }
   });
 });
 </script>
