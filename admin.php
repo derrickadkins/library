@@ -4,27 +4,6 @@ if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
     header('Location: ../index.html');
     exit();
 }
-
-include 'db/db_connect.php';
-
-// Fetch books and members to display
-$books_sql = "
-    SELECT Books.*, LatestCheckouts.CheckedInDate IS NULL AS CheckedOut
-    FROM Books
-    LEFT JOIN (
-        SELECT Checkouts.BookID, Checkouts.CheckedInDate
-        FROM Checkouts
-        INNER JOIN (
-            SELECT BookID, MAX(CheckedOutDate) as MaxCheckedOutDate
-            FROM Checkouts
-            GROUP BY BookID
-        ) as MaxCheckouts ON Checkouts.BookID = MaxCheckouts.BookID AND Checkouts.CheckedOutDate = MaxCheckouts.MaxCheckedOutDate
-    ) as LatestCheckouts ON Books.BookID = LatestCheckouts.BookID
-";
-$books_result = $conn->query($books_sql);
-
-$members_sql = "SELECT * FROM Members";
-$members_result = $conn->query($members_sql);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -33,30 +12,37 @@ $members_result = $conn->query($members_sql);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .delete-book, .delete-member {
+            display: none;
+        }
+        
+        tr:hover .delete-book, tr:hover .delete-member {
+            display: block;
+        }
+    </style>
 </head>
 <body>
     <?php include "util/admin_nav.php"; ?>
     <div class="container mt-5">
         <h1>Admin Dashboard</h1>
         <h2>Books</h2>
-        <table class="table table-striped">
+        <div id="errorBooks" class="alert alert-danger" role="alert" style="display: none;"></div>
+        <div id="successBooks" class="alert alert-success" role="alert" style="display: none;"></div>
+        <table id="booksTable" class="table table-striped">
             <thead>
                 <tr>
                     <th>Author</th>
                     <th>Title</th>
                     <th>ISBN</th>
                     <th>Status</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
-                <?php while ($book = $books_result->fetch_assoc()): ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($book['Author']); ?></td>
-                        <td><?php echo htmlspecialchars($book['Title']); ?></td>
-                        <td><?php echo htmlspecialchars($book['ISBN']); ?></td>
-                        <td><?php echo $book['CheckedOut'] ? 'Checked Out' : 'Available'; ?></td>
-                    </tr>
-                <?php endwhile; ?>
+                <tr id="loadingBooks">
+                    <td colspan="5">Loading books...</td>
+                </tr>
             </tbody>
         </table>
         <div class="mb-3">
@@ -64,22 +50,21 @@ $members_result = $conn->query($members_sql);
         </div>
 
         <h2>Members</h2>
-        <table class="table table-striped">
+        <div id="errorMembers" class="alert alert-danger" role="alert" style="display: none;"></div>
+        <div id="successMembers" class="alert alert-success" role="alert" style="display: none;"></div>
+        <table id="membersTable" class="table table-striped">
             <thead>
                 <tr>
                     <th>Name</th>
                     <th>Email</th>
                     <th>Phone</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
-                <?php while ($member = $members_result->fetch_assoc()): ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($member['Name']); ?></td>
-                        <td><?php echo htmlspecialchars($member['Email']); ?></td>
-                        <td><?php echo htmlspecialchars($member['Phone']); ?></td>
-                    </tr>
-                <?php endwhile; ?>
+                <tr id="loadingMembers">
+                    <td colspan="5">Loading members...</td>
+                </tr>
             </tbody>
         </table>
         <div class="mb-3">
@@ -90,4 +75,113 @@ $members_result = $conn->query($members_sql);
         <p>© 2024 Library. All rights reserved.</p>
     </footer>    
 </body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$(document).ready(function() {
+    $.ajax({
+        url: 'php/getBooks.php',
+        type: 'GET',
+        dataType: 'json',
+        success: function(books) {
+            console.log(books);
+            var tbody = $("#booksTable tbody");
+            tbody.empty();
+
+            $.each(books, function(i, book) {
+                var tr = $("<tr>");
+                tr.append($("<td>").text(book.Author));
+                tr.append($("<td>").text(book.Title));
+                tr.append($("<td>").text(book.ISBN));
+                tr.append($("<td>").text(book.CheckedOut == "1" ? 'Checked Out' : 'Available'));
+
+                var deleteForm = $("<form>", {class: "delete-book", display: "none"});
+                deleteForm.append($("<input>", {type: "hidden", name: "book_id", value: book.BookID}));
+                deleteForm.append($("<button>", {type: "submit", name: "delete", class: "btn btn-danger"}).text("Delete"));
+                tr.append($("<td>").append(deleteForm));
+
+                tbody.append(tr);
+            });
+
+            $(".delete-book").on("submit", function(event){
+                event.preventDefault();
+
+                var form = $(this);
+                var row = $(this).closest('tr');
+
+                $.ajax({
+                url: 'php/deleteBook.php',
+                type: 'post',
+                data: form.serialize(),
+                success: function(response){
+                    console.log(response);
+                    if (response.trim() == "success") {
+                        row.remove();
+                    } else {
+                        $("#errorBooks").html(response).show();
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    console.error(textStatus, errorThrown);
+                }
+                });
+            });
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error(textStatus, errorThrown);
+        }
+    });
+
+    $.ajax({
+        url: 'php/getMembers.php',
+        type: 'GET',
+        dataType: 'json',
+        success: function(members) {
+            console.log(members);
+            var tbody = $("#membersTable tbody");
+            tbody.empty();
+
+            $.each(members, function(i, member) {
+                var tr = $("<tr>");
+                tr.append($("<td>").text(member.Name));
+                tr.append($("<td>").text(member.Email));
+                tr.append($("<td>").text(member.Phone));
+
+                var deleteForm = $("<form>", {class: "delete-member", display: "none"});
+                deleteForm.append($("<input>", {type: "hidden", name: "person_id", value: member.PersonID}));
+                deleteForm.append($("<button>", {type: "submit", name: "delete", class: "btn btn-danger"}).text("Delete"));
+                tr.append($("<td>").append(deleteForm));
+
+                tbody.append(tr);
+            });
+
+            $(".delete-member").on("submit", function(event){
+                event.preventDefault();
+
+                var form = $(this);
+                var row = $(this).closest('tr');
+
+                $.ajax({
+                url: 'php/deleteMember.php',
+                type: 'post',
+                data: form.serialize(),
+                success: function(response){
+                    console.log(response);
+                    if (response.trim() == "success") {
+                        row.remove();
+                    } else {
+                        $("#errorMembers").html(response).show();
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    console.error(textStatus, errorThrown);
+                }
+                });
+            });
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error(textStatus, errorThrown);
+        }
+    });
+});
+</script>
 </html>

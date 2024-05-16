@@ -9,62 +9,10 @@ include 'db/db_connect.php';
 
 $email = $_SESSION['email'];
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-  if($_POST['book_id']){
-    $bookId = $_POST['book_id'];
-    $checkInDate = date('Y-m-d H:i:s');
-
-    $checkIn_sql = "UPDATE Checkouts SET
-                    CheckedInDate = '$checkInDate'
-                    WHERE BookID = '$bookId'";
-    
-    if ($conn->query($checkIn_sql) === TRUE) {
-        echo "Book checked in successfully.";
-    } else {
-        echo "Error checking in book: " . $conn->error;
-    }
-  }else{
-    $name = $_POST['name'];
-    $dob = $_POST['dob'];
-    $email = $_POST['email'];
-    $street1 = $_POST['street1'];
-    $street2 = $_POST['street2'];
-    $city = $_POST['city'];
-    $state = $_POST['state'];
-    $zipcode = $_POST['zipcode'];
-    $phone = $_POST['phone'];
-
-    $update_sql = "UPDATE Members SET 
-                    Name = '$name',
-                    DOB = '$dob',
-                    Email = '$email',
-                    Street1 = '$street1',
-                    Street2 = '$street2',
-                    City = '$city',
-                    State = '$state',
-                    ZipCode = '$zipcode',
-                    Phone = '$phone'
-                    WHERE Email = '$email'";
-
-    if ($conn->query($update_sql) === TRUE) {
-        echo "Profile updated successfully.";
-    } else {
-        echo "Error updating profile: " . $conn->error;
-    }
-  }
-}
-
 // Fetch member details
 $member_sql = "SELECT * FROM Members WHERE Email='$email'";
 $member_result = $conn->query($member_sql);
 $member = $member_result->fetch_assoc();
-
-// Fetch checked out books
-$checkouts_sql = "SELECT Books.BookID, Books.Title, Checkouts.CheckedOutDate, Checkouts.CheckedInDate 
-                  FROM Checkouts 
-                  JOIN Books ON Checkouts.BookID = Books.BookID 
-                  WHERE Checkouts.PersonID = " . $member['PersonID'];
-$checkouts_result = $conn->query($checkouts_sql);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -79,6 +27,7 @@ $checkouts_result = $conn->query($checkouts_sql);
     <div class="container mt-5">
       <h1>Welcome, <?php echo htmlspecialchars($member['Name']); ?></h1>
       <h2>Checked Out Books</h2>
+      <div id="errorBooks" class="alert alert-danger" role="alert" style="display: none;"></div>
       <table class="table table-striped">
           <thead>
               <tr>
@@ -89,30 +38,19 @@ $checkouts_result = $conn->query($checkouts_sql);
                   <th>Action</th>
               </tr>
           </thead>
-          <tbody>
-              <?php while ($checkout = $checkouts_result->fetch_assoc()): ?>
-                  <tr>
-                      <td><?php echo htmlspecialchars($checkout['Title']); ?></td>
-                      <td><?php echo htmlspecialchars($checkout['CheckedOutDate']); ?></td>
-                      <td><?php echo date('Y-m-d H:i:s', strtotime($checkout['CheckedOutDate'] . ' + 7 days')); ?></td>
-                      <td><?php echo ($checkout['CheckedInDate'] ? 'Returned' : 'Due'); ?></td>
-                      <td>
-                          <?php if (!$checkout['CheckedInDate']): ?>
-                              <form action="dashboard.php" method="POST">
-                                  <input type="hidden" name="book_id" value="<?php echo $checkout['BookID']; ?>">
-                                  <input type="submit" value="Check In" class="btn btn-primary">
-                              </form>
-                          <?php endif; ?>
-                      </td>
-                  </tr>
-              <?php endwhile; ?>
+          <tbody id="checkoutsTable">
+            <tr id="loadingMessage">
+                <td colspan="5">Loading books...</td>
+            </tr>
           </tbody>
       </table>
       <div class="mb-3">
           <a href="books.php" class="btn btn-primary">Checkout New Book</a>
       </div>
       <h2>Update Profile</h2>
-      <form action="dashboard.php" method="POST">
+      <div id="errorProfile" class="alert alert-danger" role="alert" style="display: none;"></div>
+      <div id="successProfile" class="alert alert-success" role="alert" style="display: none;">Profile updated successfully.</div>
+      <form id="profileForm">
           <div class="form-group">
               <label for="name">Name</label>
               <input type="text" id="name" name="name" class="form-control" value="<?php echo htmlspecialchars($member['Name']); ?>" required>
@@ -139,7 +77,7 @@ $checkouts_result = $conn->query($checkouts_sql);
           </div>
           <div class="form-group">
               <label for="state">State</label>
-              <select class="form-control" id="state" name="state" value="<?php echo htmlspecialchars($member['State']); ?>" required>
+              <select class="form-control" id="state" name="state" required>
                   <option value="">Select a state</option>
                   <?php include "util/states.php"; ?>
               </select>
@@ -161,4 +99,92 @@ $checkouts_result = $conn->query($checkouts_sql);
     </footer>
 
 </body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$(document).ready(function() {
+    console.log(<?php echo json_encode($member); ?>);
+    // Set the state dropdown
+    $("#state").val("<?php echo $member['State']; ?>");
+
+    $.ajax({
+        url: 'php/getCheckedOutBooks.php',
+        type: 'GET',
+        dataType: 'json',
+        success: function(checkouts) {
+            $("tbody").empty();
+            $.each(checkouts, function(i, checkout) {
+                var tr = $("<tr>");
+                tr.append($("<td>").text(checkout.Title));
+                tr.append($("<td>").text(checkout.CheckedOutDate));
+                tr.append($("<td>").text(new Date(checkout.CheckedOutDate).setDate(new Date(checkout.CheckedOutDate).getDate() + 7)));
+                tr.append($("<td>").text(checkout.CheckedInDate ? 'Returned' : 'Due'));
+
+                if (!checkout.CheckedInDate) {
+                    var form = $("<form>", {class: "checkIn"});
+                    form.append($("<input>", {type: "hidden", name: "book_id", value: checkout.BookID}));
+                    form.append($("<input>", {type: "submit", value: "Check In", class: "btn btn-primary"}));
+                    tr.append($("<td>").append(form));
+                } else {
+                    tr.append($("<td>"));
+                }
+
+                $("tbody").append(tr);
+            });
+
+            $("form.checkIn").on("submit", function(event){
+                event.preventDefault();
+
+                var form = $(this);
+
+                $.ajax({
+                url: 'php/checkInBook.php',
+                type: 'post',
+                data: form.serialize(),
+                success: function(response){
+                    // handle the response from the server
+                    console.log(response);
+                    if (response.trim() == "success") {
+                        form.hide();
+                        form.parent().prev().text("Returned");
+                    } else {
+                        // display the error message
+                        $("#errorBooks").html(response).show();
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    // handle any errors
+                    console.error(textStatus, errorThrown);
+                }
+                });
+            });
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error(textStatus, errorThrown);
+        }
+    });
+
+    $("#profileForm").on("submit", function(event){
+        event.preventDefault();
+        $.ajax({
+            url: "php/updateProfile.php",
+            type: "post",
+            data: $(this).serialize(),
+            success: function(response){
+                console.log(response);
+                if(response.trim() == "success"){
+                    $("#successProfile").show();
+                    $("#errorProfile").hide();
+                } else {
+                    $("#errorProfile").html(response).show();
+                    $("#successProfile").hide();
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                // handle any errors
+                console.error(textStatus, errorThrown);
+            }
+        })
+    });
+});
+</script>
 </html>

@@ -4,25 +4,6 @@ if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
     header('Location: ../index.php');
     exit();
 }
-
-include 'db/db_connect.php';
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $author = $_POST['author'];
-    $title = $_POST['title'];
-    $isbn = $_POST['isbn'];
-    $recid = uniqid(); // Generate a unique RecID
-
-    $insert_book_sql = "INSERT INTO Books (Author, Title, ISBN, RecID) VALUES ('$author', '$title', '$isbn', '$recid')";
-
-    if ($conn->query($insert_book_sql) === TRUE) {
-        echo "Book added successfully<br>";
-    } else {
-        echo "Error adding book: " . $conn->error . "<br>";
-    }
-}
-
-$conn->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -37,7 +18,9 @@ $conn->close();
     <?php include "util/admin_nav.php"; ?>
     <div class="container mt-5">
         <h1>Add Book</h1>
-        <form action="addBook.php" method="POST">
+        <div id="error" class="alert alert-danger" role="alert" style="display: none;"></div>
+        <div id="success" class="alert alert-success" role="alert" style="display: none;">Book added successfully.</div>
+        <form>
             <div class="form-group">
                 <label for="author">Author</label>
                 <input type="text" id="author" name="author" class="form-control" required>
@@ -57,4 +40,30 @@ $conn->close();
         <p>© 2024 Library. All rights reserved.</p>
     </footer>
 </body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$(document).ready(function() {
+    $("form").on("submit", function(event){
+        event.preventDefault();
+
+        $.ajax({
+            url: "php/insertBook.php",
+            type: "post",
+            data: $(this).serialize(),
+            success: function(response){
+                if(response.trim() == "success"){
+                    $("#success").show();
+                    $("#error").hide();
+                }else{
+                    $("#error").html(response).show();
+                    $("#success").hide();
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                console.error(textStatus, errorThrown);
+            }
+        });
+    });
+});
+</script>
 </html>
