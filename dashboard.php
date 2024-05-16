@@ -131,9 +131,22 @@ $(document).ready(function() {
             $.each(checkouts, function(i, checkout) {
                 var tr = $("<tr>");
                 tr.append($("<td>").text(checkout.Title));
-                tr.append($("<td>").text(checkout.CheckedOutDate));
-                tr.append($("<td>").text(new Date(checkout.CheckedOutDate).setDate(new Date(checkout.CheckedOutDate).getDate() + 7)));
-                tr.append($("<td>").text(checkout.CheckedInDate ? 'Returned' : 'Due'));
+                tr.append($("<td>").text(new Date(checkout.CheckedOutDate).toLocaleDateString('en-US', {month: '2-digit', day: '2-digit', year: '2-digit'})));
+                var dueDate = new Date(new Date(checkout.CheckedOutDate).setDate(new Date(checkout.CheckedOutDate).getDate() + 7));
+                tr.append($("<td>").text(dueDate.toLocaleDateString('en-US', {month: '2-digit', day: '2-digit', year: '2-digit'})));
+
+                var status;
+                if (checkout.CheckedInDate) {
+                    status = 'Returned on ' + new Date(checkout.CheckedInDate).toLocaleDateString('en-US', {month: '2-digit', day: '2-digit', year: '2-digit'});
+                } else {
+                    var diff = Math.ceil((dueDate - new Date()) / (1000 * 60 * 60 * 24));
+                    if (diff > 0) {
+                        status = 'Due in ' + diff + ' days';
+                    } else {
+                        status = 'Overdue by ' + Math.abs(diff) + ' days';
+                    }
+                }
+                tr.append($("<td>").text(status));
 
                 if (!checkout.CheckedInDate) {
                     var form = $("<form>", {class: "checkIn"});
@@ -198,16 +211,14 @@ $(document).ready(function() {
         })
     });
 
-    $(document).ready(function() {
-        $('#toggle-password').click(function() {
-            $(this).toggleClass("fa-eye fa-eye-slash");
-            var input = $("#password");
-            if (input.attr("type") === "password") {
-                input.attr("type", "text");
-            } else {
-                input.attr("type", "password");
-            }
-        });
+    $('#toggle-password').click(function() {
+        $(this).toggleClass("fa-eye fa-eye-slash");
+        var input = $("#password");
+        if (input.attr("type") === "password") {
+            input.attr("type", "text");
+        } else {
+            input.attr("type", "password");
+        }
     });
 });
 </script>
