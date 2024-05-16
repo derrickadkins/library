@@ -21,6 +21,7 @@ $member = $member_result->fetch_assoc();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Member Dashboard</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
     <?php include "util/nav.php"; ?>
@@ -61,7 +62,7 @@ $member = $member_result->fetch_assoc();
           </div>
           <div class="form-group">
               <label for="email">Email</label>
-              <input type="email" id="email" name="email" class="form-control" value="<?php echo htmlspecialchars($member['Email']); ?>" required>
+              <input type="email" id="email" name="email" class="form-control" value="<?php echo htmlspecialchars($member['Email']); ?>" required disabled>
           </div>
           <div class="form-group">
               <label for="street1">Street</label>
@@ -90,6 +91,22 @@ $member = $member_result->fetch_assoc();
               <label for="phone">Phone Number</label>
               <input type="text" id="phone" name="phone" class="form-control" value="<?php echo htmlspecialchars($member['Phone']); ?>" required>
           </div>
+        <div class="form-group">
+            <label for="password">Update Password</label>
+            <div class="input-group">
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    class="form-control"
+                />
+                <div class="input-group-append">
+                    <span class="input-group-text">
+                        <i id="toggle-password" class="fa fa-eye" aria-hidden="true"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
           <button type="submit" class="btn btn-primary">Update Profile</button>
       </form>
     </div>
@@ -103,7 +120,6 @@ $member = $member_result->fetch_assoc();
 <script>
 $(document).ready(function() {
     console.log(<?php echo json_encode($member); ?>);
-    // Set the state dropdown
     $("#state").val("<?php echo $member['State']; ?>");
 
     $.ajax({
@@ -141,18 +157,15 @@ $(document).ready(function() {
                 type: 'post',
                 data: form.serialize(),
                 success: function(response){
-                    // handle the response from the server
                     console.log(response);
                     if (response.trim() == "success") {
                         form.hide();
                         form.parent().prev().text("Returned");
                     } else {
-                        // display the error message
                         $("#errorBooks").html(response).show();
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown){
-                    // handle any errors
                     console.error(textStatus, errorThrown);
                 }
                 });
@@ -180,10 +193,21 @@ $(document).ready(function() {
                 }
             },
             error: function(jqXHR, textStatus, errorThrown){
-                // handle any errors
                 console.error(textStatus, errorThrown);
             }
         })
+    });
+
+    $(document).ready(function() {
+        $('#toggle-password').click(function() {
+            $(this).toggleClass("fa-eye fa-eye-slash");
+            var input = $("#password");
+            if (input.attr("type") === "password") {
+                input.attr("type", "text");
+            } else {
+                input.attr("type", "password");
+            }
+        });
     });
 });
 </script>

@@ -11,18 +11,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $state = $_POST['state'];
     $zipcode = $_POST['zipcode'];
     $phone = $_POST['phone'];
-
+    
     $update_sql = "UPDATE Members SET 
-                    Name = '$name',
+                    Name = '$name', 
                     DOB = '$dob',
-                    Email = '$email',
-                    Street1 = '$street1',
-                    Street2 = '$street2',
-                    City = '$city',
-                    State = '$state',
-                    ZipCode = '$zipcode',
-                    Phone = '$phone'
-                    WHERE Email = '$email'";
+                    Street1 = '$street1', 
+                    Street2 = '$street2', 
+                    City = '$city', 
+                    State = '$state', 
+                    Zipcode = '$zipcode', 
+                    Phone = '$phone'";
+
+    if (!empty($_POST['password'])) {
+        $password = $_POST['password'];
+        // Hash the password before storing it in the database
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+        // Add the password to the update query
+        $update_sql .= ", Password = '$hashed_password'";
+    }
+
+    $update_sql .= " WHERE Email = '$email'";
+
+    $conn->query($update_sql);
 
     if ($conn->query($update_sql) === TRUE) {
         echo "success";
