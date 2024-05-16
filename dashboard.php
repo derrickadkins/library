@@ -98,7 +98,7 @@ $checkouts_result = $conn->query($checkouts_sql);
                       <td><?php echo ($checkout['CheckedInDate'] ? 'Returned' : 'Due'); ?></td>
                       <td>
                           <?php if (!$checkout['CheckedInDate']): ?>
-                              <form action="member_dashboard.php" method="POST">
+                              <form action="dashboard.php" method="POST">
                                   <input type="hidden" name="book_id" value="<?php echo $checkout['BookID']; ?>">
                                   <input type="submit" value="Check In" class="btn btn-primary">
                               </form>
@@ -112,7 +112,7 @@ $checkouts_result = $conn->query($checkouts_sql);
           <a href="books.php" class="btn btn-primary">Checkout New Book</a>
       </div>
       <h2>Update Profile</h2>
-      <form action="member_dashboard.php" method="POST">
+      <form action="dashboard.php" method="POST">
           <div class="form-group">
               <label for="name">Name</label>
               <input type="text" id="name" name="name" class="form-control" value="<?php echo htmlspecialchars($member['Name']); ?>" required>

@@ -4,30 +4,6 @@ if (!isset($_SESSION['email']) || $_SESSION['admin'] === true) {
     header('Location: ../index.html');
     exit();
 }
-
-include 'db/db_connect.php';
-
-$email = $_SESSION['email'];
-
-// Fetch member details
-$member_sql = "SELECT * FROM Members WHERE Email='$email'";
-$member_result = $conn->query($member_sql);
-$member = $member_result->fetch_assoc();
-$person_id = $member['PersonID'];
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['checkout'])) {
-    $book_id = $_POST['book_id'];
-    $checkout_date = date('Y-m-d H:i:s');
-
-    $checkout_sql = "INSERT INTO Checkouts (PersonID, BookID, CheckedOutDate) VALUES ('$person_id', '$book_id', '$checkout_date')";
-
-    if ($conn->query($checkout_sql) === TRUE) {
-        echo "Book checked out successfully.";
-    } else {
-        echo "Error checking out book: " . $conn->error;
-    }
-}
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -41,6 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['checkout'])) {
     <?php include "util/nav.php"; ?>
     <div class="container mt-5">
         <h1>Browse Books</h1>
+        <div id="error" class="alert alert-danger" role="alert" style="display: none;"></div>
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -82,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['checkout'])) {
                     tr.append($("<td>").text(book.CheckedOut == "1" ? 'Checked Out' : 'Available'));
     
                     if (book.CheckedOut == "0") {
-                        var form = $("<form>", {action: "books.php", method: "POST"});
+                        var form = $("<form>");
                         form.append($("<input>", {type: "hidden", name: "book_id", value: book.BookID}));
                         form.append($("<button>", {type: "submit", name: "checkout", class: "btn btn-primary"}).text("Check Out"));
                         tr.append($("<td>").append(form));
@@ -91,6 +68,33 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['checkout'])) {
                     }
     
                     tbody.append(tr);
+                });
+
+                $("form").on("submit", function(event){
+                    event.preventDefault();
+
+                    var form = $(this);
+
+                    $.ajax({
+                    url: 'php/checkoutBook.php',
+                    type: 'post',
+                    data: form.serialize(),
+                    success: function(response){
+                        // handle the response from the server
+                        console.log(response);
+                        if (response.trim() == "success") {
+                            form.hide();
+                            form.parent().prev().text("Checked Out");
+                        } else {
+                            // display the error message
+                            $("#error").html(response).show();
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown){
+                        // handle any errors
+                        console.error(textStatus, errorThrown);
+                    }
+                    });
                 });
             },
             error: function(jqXHR, textStatus, errorThrown) {
