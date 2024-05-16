@@ -15,7 +15,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['book_id'])) {
     $book_id = $_POST['book_id'];
     $checkout_date = date('Y-m-d H:i:s');
 
-    $checkout_sql = "INSERT INTO Checkouts (PersonID, BookID, CheckedOutDate) VALUES ('$person_id', '$book_id', '$checkout_date')";
+    $checkout_sql = "INSERT INTO Checkouts (PersonID, BookID, CheckedOutDate) 
+                    VALUES ('$person_id', '$book_id', '$checkout_date')";
 
     if ($conn->query($checkout_sql) === TRUE) {
         echo "success";
