@@ -7,13 +7,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['author'])) {
     $isbn = $_POST['isbn'];
     $recid = uniqid(); // Generate a unique RecID
 
-    $insert_book_sql = "INSERT INTO Books (Author, Title, ISBN, RecID) VALUES ('$author', '$title', '$isbn', '$recid')";
+    $stmt = $conn->prepare("INSERT INTO Books (Author, Title, ISBN, RecID) VALUES (?, ?, ?, ?)");
+    $stmt->bind_param("ssss", $author, $title, $isbn, $recid);
 
-    if ($conn->query($insert_book_sql) === TRUE) {
+    if ($stmt->execute()) {
         echo "success";
     } else {
-        echo "Error adding book: " . $conn->error . "<br>";
+        echo "Error adding book: " . $stmt->error;
     }
+
+    $stmt->close();
 } else {
     echo "Invalid request.";
 }

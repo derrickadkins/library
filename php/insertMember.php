@@ -15,10 +15,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['name'])) {
     $recid = uniqid(); // Generate a unique RecID
 
     $insert_member_sql = "INSERT INTO Members (Name, DOB, Email, Street1, Street2, City, State, ZipCode, Phone, Password, RecID)
-                          VALUES ('$name', '$dob', '$email', '$street1', '$street2', '$city', '$state', '$zipcode', '$phone', '$password', '$recid')";
+                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+    $stmt = $conn->prepare($insert_member_sql);
+    $stmt->bind_param("sssssssssss", $name, $dob, $email, $street1, $street2, $city, $state, $zipcode, $phone, $password, $recid);
 
     try {
-        $conn->query($insert_member_sql);
+        $stmt->execute();
         echo "success";
     } catch (mysqli_sql_exception $e) {
         if ($e->getCode() == 1062) {
@@ -26,6 +29,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['name'])) {
         } else {
             echo "An error occurred: " . $e->getMessage();
         }
+    } finally {
+        $stmt->close();
     }
 } else {
     echo "Invalid request.";

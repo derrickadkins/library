@@ -6,8 +6,12 @@ $email = $_POST['email'];
 $password = $_POST['password'];
 
 // Query to find the user
-$sql = "SELECT * FROM Members WHERE Email = '$email'";
-$result = $conn->query($sql);
+$sql = "SELECT * FROM Members WHERE Email = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("s", $email);
+$stmt->execute();
+
+$result = $stmt->get_result();
 
 if ($result->num_rows > 0) {
     $user = $result->fetch_assoc();
@@ -19,18 +23,22 @@ if ($result->num_rows > 0) {
         $_SESSION['name'] = $user['Name'];
         
         // Check if the user is an admin
-        $admin_sql = "SELECT * FROM Admins WHERE Email = '$email'";
-        $admin_result = $conn->query($admin_sql);
+        $admin_sql = "SELECT * FROM Admins WHERE Email = ?";
+        $admin_stmt = $conn->prepare($admin_sql);
+        $admin_stmt->bind_param("s", $email);
+        $admin_stmt->execute();
+
+        $admin_result = $admin_stmt->get_result();
         
         if ($admin_result->num_rows > 0) {
             $_SESSION['admin'] = true;
-            // header('Location: ../admin.php');
             echo "admin";
         } else {
             $_SESSION['admin'] = false;
-            // header('Location: ../dashboard.php');
             echo "member";
         }
+
+        $admin_stmt->close();
     } else {
         echo "Invalid password.";
     }
@@ -38,5 +46,6 @@ if ($result->num_rows > 0) {
     echo "No user found with that email.";
 }
 
+$stmt->close();
 $conn->close();
 ?>
