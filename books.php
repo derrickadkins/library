@@ -23,22 +23,24 @@ $name = $_SESSION['name'];
     <div class="container mt-5">
         <h1>Browse Books</h1>
         <div id="error" class="alert alert-danger" role="alert" style="display: none;"></div>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Author</th>
-                    <th>Title</th>
-                    <th>ISBN</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr id="loadingMessage">
-                    <td colspan="5">Loading books...</td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Author</th>
+                        <th>Title</th>
+                        <th>ISBN</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr id="loadingMessage">
+                        <td colspan="5">Loading books...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
     <footer class="bg-dark text-white text-center p-3 mt-5">
         <p>© 2024 Library. All rights reserved.</p>

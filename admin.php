@@ -36,22 +36,24 @@ if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
         <h2>Books</h2>
         <div id="errorBooks" class="alert alert-danger" role="alert" style="display: none;"></div>
         <div id="successBooks" class="alert alert-success" role="alert" style="display: none;"></div>
-        <table id="booksTable" class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Author</th>
-                    <th>Title</th>
-                    <th>ISBN</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr id="loadingBooks">
-                    <td colspan="5">Loading books...</td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table id="booksTable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Author</th>
+                        <th>Title</th>
+                        <th>ISBN</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr id="loadingBooks">
+                        <td colspan="5">Loading books...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
         <div class="mb-3">
             <a href="addBook.php" class="btn btn-primary">Add Book</a>
         </div>
@@ -59,21 +61,23 @@ if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
         <h2>Members</h2>
         <div id="errorMembers" class="alert alert-danger" role="alert" style="display: none;"></div>
         <div id="successMembers" class="alert alert-success" role="alert" style="display: none;"></div>
-        <table id="membersTable" class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr id="loadingMembers">
-                    <td colspan="5">Loading members...</td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table id="membersTable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr id="loadingMembers">
+                        <td colspan="5">Loading members...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
         <div class="mb-3">
             <a href="addMember.php" class="btn btn-primary">Add Member</a>
         </div>

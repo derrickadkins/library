@@ -31,22 +31,24 @@ $member = $member_result->fetch_assoc();
         <h1 class="display-4">Welcome, <?php echo htmlspecialchars($member['Name']); ?></h1>
         <h2>Checked Out Books</h2>
         <div id="errorBooks" class="alert alert-danger" role="alert" style="display: none;"></div>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Checked Out Date</th>
-                    <th>Due Date</th>
-                    <th>Status</th>
-                    <th>Action</th>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Checked Out Date</th>
+                        <th>Due Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="checkoutsTable">
+                <tr id="loadingMessage">
+                    <td colspan="5">Loading books...</td>
                 </tr>
-            </thead>
-            <tbody id="checkoutsTable">
-            <tr id="loadingMessage">
-                <td colspan="5">Loading books...</td>
-            </tr>
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
         <div class="mb-3">
             <a href="books.php" class="btn btn-primary">Checkout New Book</a>
         </div>
