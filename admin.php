@@ -29,6 +29,10 @@ if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
     <?php include "util/admin_nav.php"; ?>
     <div class="container mt-5">
         <h1>Admin Dashboard</h1>
+        <h2>Checkouts Report</h2>
+        <div class="mb-3">
+            <a href="php/downloadCheckoutsReport.php" class="btn btn-primary">Download</a>
+        </div>
         <h2>Books</h2>
         <div id="errorBooks" class="alert alert-danger" role="alert" style="display: none;"></div>
         <div id="successBooks" class="alert alert-success" role="alert" style="display: none;"></div>
