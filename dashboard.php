@@ -28,75 +28,75 @@ $member = $member_result->fetch_assoc();
 <body>
     <?php include "util/nav.php"; ?>
     <div class="container mt-5">
-      <h1>Welcome, <?php echo htmlspecialchars($member['Name']); ?></h1>
-      <h2>Checked Out Books</h2>
-      <div id="errorBooks" class="alert alert-danger" role="alert" style="display: none;"></div>
-      <table class="table table-striped">
-          <thead>
-              <tr>
-                  <th>Title</th>
-                  <th>Checked Out Date</th>
-                  <th>Due Date</th>
-                  <th>Status</th>
-                  <th>Action</th>
-              </tr>
-          </thead>
-          <tbody id="checkoutsTable">
+        <h1 class="display-4">Welcome, <?php echo htmlspecialchars($member['Name']); ?></h1>
+        <h2>Checked Out Books</h2>
+        <div id="errorBooks" class="alert alert-danger" role="alert" style="display: none;"></div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Checked Out Date</th>
+                    <th>Due Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="checkoutsTable">
             <tr id="loadingMessage">
                 <td colspan="5">Loading books...</td>
             </tr>
-          </tbody>
-      </table>
-      <div class="mb-3">
-          <a href="books.php" class="btn btn-primary">Checkout New Book</a>
-      </div>
-      <h2>Update Profile</h2>
-      <div id="errorProfile" class="alert alert-danger" role="alert" style="display: none;"></div>
-      <div id="successProfile" class="alert alert-success" role="alert" style="display: none;">Profile updated successfully.</div>
-      <form id="profileForm">
-          <div class="form-group">
-              <label for="name">Name</label>
-              <input type="text" id="name" name="name" class="form-control" value="<?php echo htmlspecialchars($member['Name']); ?>" required>
-          </div>
-          <div class="form-group">
-              <label for="dob">Date of Birth</label>
-              <input type="date" id="dob" name="dob" class="form-control" value="<?php echo htmlspecialchars($member['DOB']); ?>" required>
-          </div>
-          <div class="form-group">
-              <label for="email">Email</label>
-              <input type="email" id="email" name="email" class="form-control" value="<?php echo htmlspecialchars($member['Email']); ?>" required disabled>
-          </div>
-          <div class="form-group">
-              <label for="street1">Street</label>
-              <input type="text" id="street1" name="street1" class="form-control" value="<?php echo htmlspecialchars($member['Street1']); ?>" required>
-          </div>
-          <div class="form-group">
-              <label for="street2">Apartment, suite, etc.</label>
-              <input type="text" id="street2" name="street2" class="form-control" value="<?php echo htmlspecialchars($member['Street2']); ?>">
-          </div>
-          <div class="form-group">
-              <label for="city">City</label>
-              <input type="text" id="city" name="city" class="form-control" value="<?php echo htmlspecialchars($member['City']); ?>" required>
-          </div>
-          <div class="form-group">
-              <label for="state">State</label>
-              <select class="form-control" id="state" name="state" required>
-                  <option value="">Select a state</option>
-                  <?php include "util/states.php"; ?>
-              </select>
-          </div>
-          <div class="form-group">
-              <label for="zipcode">Zip Code</label>
-              <input type="text" id="zipcode" name="zipcode" class="form-control" value="<?php echo htmlspecialchars($member['ZipCode']); ?>" required>
-          </div>
-          <div class="form-group">
-              <label for="phone">Phone Number</label>
-              <input type="text" id="phone" name="phone" class="form-control" value="<?php echo htmlspecialchars($member['Phone']); ?>" required>
-          </div>
-          <button type="submit" class="btn btn-primary">Update Profile</button>
-      </form>
-    </div>
-    <div class="container">
+            </tbody>
+        </table>
+        <div class="mb-3">
+            <a href="books.php" class="btn btn-primary">Checkout New Book</a>
+        </div>
+        <hr />
+        <h2>Update Profile</h2>
+        <div id="errorProfile" class="alert alert-danger" role="alert" style="display: none;"></div>
+        <div id="successProfile" class="alert alert-success" role="alert" style="display: none;">Profile updated successfully.</div>
+        <form id="profileForm">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" class="form-control" value="<?php echo htmlspecialchars($member['Name']); ?>" required>
+            </div>
+            <div class="form-group">
+                <label for="dob">Date of Birth</label>
+                <input type="date" id="dob" name="dob" class="form-control" value="<?php echo htmlspecialchars($member['DOB']); ?>" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" class="form-control" value="<?php echo htmlspecialchars($member['Email']); ?>" required disabled>
+            </div>
+            <div class="form-group">
+                <label for="street1">Street</label>
+                <input type="text" id="street1" name="street1" class="form-control" value="<?php echo htmlspecialchars($member['Street1']); ?>" required>
+            </div>
+            <div class="form-group">
+                <label for="street2">Apartment, suite, etc.</label>
+                <input type="text" id="street2" name="street2" class="form-control" value="<?php echo htmlspecialchars($member['Street2']); ?>">
+            </div>
+            <div class="form-group">
+                <label for="city">City</label>
+                <input type="text" id="city" name="city" class="form-control" value="<?php echo htmlspecialchars($member['City']); ?>" required>
+            </div>
+            <div class="form-group">
+                <label for="state">State</label>
+                <select class="form-control" id="state" name="state" required>
+                    <option value="">Select a state</option>
+                    <?php include "util/states.php"; ?>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="zipcode">Zip Code</label>
+                <input type="text" id="zipcode" name="zipcode" class="form-control" value="<?php echo htmlspecialchars($member['ZipCode']); ?>" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="text" id="phone" name="phone" class="form-control" value="<?php echo htmlspecialchars($member['Phone']); ?>" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Update Profile</button>
+        </form>
+        <hr />
         <h2>Update Password</h2>
         <div id="errorPassword" class="alert alert-danger" role="alert" style="display: none;"></div>
         <div id="successPassword" class="alert alert-success" role="alert" style="display: none;">Password updated successfully.</div>
