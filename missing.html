@@ -1,34 +1,52 @@
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>404 Not Found</title>
-<style type="text/css"><!--
-.style3 {
-  font-family: Verdana, Arial, Helvetica, sans-serif;
-  color: #CC0000;
-}
-.s {
-  font-family: Verdana, Arial, Helvetica, sans-serif;
-  font-size: 11px;
-  font-weight: normal;
-  color: #000000;
-  line-height: 18px;
-  text-align: center;
-  border: 1px solid #CCCCCC;
-  background-color: #FFFFEC;
-}
-body {
-  background-color: #FFFFFF;
-  margin-top: 100px;
-}
---></style>
-</head>
-<body>
-<div align="center">
-<h2><span class="style3">404 Not Found</span></h2>
-<table border="0" cellpadding="8" cellspacing="0" width="460">
-<tbody><tr><td class="s">The requested URL was not found on this server.</td></tr></tbody>
-</table>
-</div>
-</body>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Page Not Found - Library</title>
+    <link rel="icon" href="icon.png" type="image/x-icon" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f8f9fa;
+      }
+      .container {
+        text-align: center;
+      }
+      .error-code {
+        font-size: 72px;
+        font-weight: bold;
+        color: #dc3545;
+      }
+      .error-message {
+        font-size: 24px;
+        margin-bottom: 20px;
+      }
+      .error-suggestion {
+        font-size: 18px;
+        color: #6c757d;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="error-code">404</div>
+      <div class="error-message">
+        Oops! The page you are looking for doesn't exist.
+      </div>
+      <div class="error-suggestion">
+        It seems you may have taken a wrong turn. Don't worry... it happens to
+        the best of us.
+      </div>
+      <div class="mt-4">
+        <a href="index.php" class="btn btn-primary">Go to Homepage</a>
+      </div>
+    </div>
+  </body>
 </html>
