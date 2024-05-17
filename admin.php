@@ -118,6 +118,10 @@ if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
                         </span>
                     </div>
                 </div>
+                <small id="passwordHelp" class="form-text text-muted">
+                    Password must be at least 8 characters long, contain an 
+                    uppercase letter, a lowercase letter, and a number.
+                </small>
             </div>
             <button id="updatePasswordButton" type="submit" class="btn btn-primary">Update Password</button>
         </form>
@@ -273,6 +277,14 @@ if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
             event.preventDefault();
 
             var form = this;
+            var newPassword = $("#new_password").val();
+            var regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
+            if (!regex.test(newPassword)) {
+                $("#errorPassword").html("Password does not meet the strength requirements.").show();
+                $("#successPassword").hide();
+                return;
+            }
+
             $("#updatePasswordButton").prop("disabled", true);
 
             $.ajax({
