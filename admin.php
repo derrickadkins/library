@@ -51,7 +51,7 @@ if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
         <div class="mb-3">
             <a href="addBook.php" class="btn btn-primary">Add Book</a>
         </div>
-
+        <hr />
         <h2>Members</h2>
         <div id="errorMembers" class="alert alert-danger" role="alert" style="display: none;"></div>
         <div id="successMembers" class="alert alert-success" role="alert" style="display: none;"></div>
@@ -73,8 +73,7 @@ if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
         <div class="mb-3">
             <a href="addMember.php" class="btn btn-primary">Add Member</a>
         </div>
-    </div>
-    <div class="container">
+        <hr />
         <h2>Update Password</h2>
         <div id="errorPassword" class="alert alert-danger" role="alert" style="display: none;"></div>
         <div id="successPassword" class="alert alert-success" role="alert" style="display: none;">Password updated successfully.</div>
