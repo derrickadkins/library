@@ -14,6 +14,7 @@ if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
     <link rel="icon" href="icon.png" type="image/x-icon" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.25/datatables.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
         .delete-book, .delete-member {
             display: none;
@@ -72,6 +73,36 @@ if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
         <div class="mb-3">
             <a href="addMember.php" class="btn btn-primary">Add Member</a>
         </div>
+    </div>
+    <div class="container">
+        <h2>Update Password</h2>
+        <div id="errorPassword" class="alert alert-danger" role="alert" style="display: none;"></div>
+        <div id="successPassword" class="alert alert-success" role="alert" style="display: none;">Password updated successfully.</div>
+        <form id="updatePasswordForm">
+            <div class="form-group">
+                <label for="old_password">Old Password</label>
+                <div class="input-group">
+                    <input type="password" class="form-control" id="old_password" name="old_password" required>
+                    <div class="input-group-append">
+                        <span class="input-group-text">
+                            <i class="fa fa-eye-slash" id="toggleOldPassword"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="new_password">New Password</label>
+                <div class="input-group">
+                    <input type="password" class="form-control" id="new_password" name="new_password" required>
+                    <div class="input-group-append">
+                        <span class="input-group-text">
+                            <i class="fa fa-eye-slash" id="toggleNewPassword"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Update Password</button>
+        </form>
     </div>
     <footer class="bg-dark text-white text-center p-3 mt-5">
         <p>© 2024 Library. All rights reserved.</p>
@@ -192,6 +223,51 @@ if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
             error: function(jqXHR, textStatus, errorThrown) {
                 console.error(textStatus, errorThrown);
             }
+        });
+
+        $("#toggleOldPassword").click(function() {
+            $(this).toggleClass("fa-eye fa-eye-slash");
+            var input = $("#old_password");
+            if (input.attr("type") === "password") {
+                input.attr("type", "text");
+            } else {
+                input.attr("type", "password");
+            }
+        });
+
+        $("#toggleNewPassword").click(function() {
+            $(this).toggleClass("fa-eye fa-eye-slash");
+            var input = $("#new_password");
+            if (input.attr("type") === "password") {
+                input.attr("type", "text");
+            } else {
+                input.attr("type", "password");
+            }
+        });
+
+        $("#updatePasswordForm").on("submit", function(event){
+            event.preventDefault();
+
+            var form = this;
+
+            $.ajax({
+                url: "php/updatePassword.php",
+                type: "post",
+                data: $(this).serialize(),
+                success: function(response){
+                    if(response.trim() == "success"){
+                        $("#successPassword").show();
+                        $("#errorPassword").hide();
+                        form.reset();
+                    }else{
+                        $("#errorPassword").html(response).show();
+                        $("#successPassword").hide();
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error(textStatus, errorThrown);
+                }
+            });
         });
     });
     </script>

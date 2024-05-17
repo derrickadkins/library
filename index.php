@@ -56,7 +56,7 @@ if (isset($_SESSION['email'])) {
                     />
                     <div class="input-group-append">
                       <span class="input-group-text">
-                        <i id="toggle-password" class="fa fa-eye" aria-hidden="true"></i>
+                        <i id="toggle-password" class="fa fa-eye-slash" aria-hidden="true"></i>
                       </span>
                     </div>
                   </div>

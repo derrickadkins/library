@@ -27,18 +27,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt = $conn->prepare($update_sql);
     $stmt->bind_param("sssssssss", $name, $dob, $street1, $street2, $city, $state, $zipcode, $phone, $email);
 
-    if (!empty($_POST['password'])) {
-        $password = $_POST['password'];
-        // Hash the password before storing it in the database
-        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-        // Add the password to the update query
-        $update_password_sql = "UPDATE Members SET Password = ? WHERE Email = ?";
-        $password_stmt = $conn->prepare($update_password_sql);
-        $password_stmt->bind_param("ss", $hashed_password, $email);
-        $password_stmt->execute();
-        $password_stmt->close();
-    }
-
     if ($stmt->execute()) {
         echo "success";
     } else {

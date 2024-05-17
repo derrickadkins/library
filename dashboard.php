@@ -93,26 +93,39 @@ $member = $member_result->fetch_assoc();
               <label for="phone">Phone Number</label>
               <input type="text" id="phone" name="phone" class="form-control" value="<?php echo htmlspecialchars($member['Phone']); ?>" required>
           </div>
-        <div class="form-group">
-            <label for="password">Update Password</label>
-            <div class="input-group">
-                <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    class="form-control"
-                />
-                <div class="input-group-append">
-                    <span class="input-group-text">
-                        <i id="toggle-password" class="fa fa-eye" aria-hidden="true"></i>
-                    </span>
-                </div>
-            </div>
-        </div>
           <button type="submit" class="btn btn-primary">Update Profile</button>
       </form>
     </div>
-
+    <div class="container">
+        <h2>Update Password</h2>
+        <div id="errorPassword" class="alert alert-danger" role="alert" style="display: none;"></div>
+        <div id="successPassword" class="alert alert-success" role="alert" style="display: none;">Password updated successfully.</div>
+        <form id="updatePasswordForm">
+            <div class="form-group">
+                <label for="old_password">Old Password</label>
+                <div class="input-group">
+                    <input type="password" class="form-control" id="old_password" name="old_password" required>
+                    <div class="input-group-append">
+                        <span class="input-group-text">
+                            <i class="fa fa-eye-slash" id="toggleOldPassword"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="new_password">New Password</label>
+                <div class="input-group">
+                    <input type="password" class="form-control" id="new_password" name="new_password" required>
+                    <div class="input-group-append">
+                        <span class="input-group-text">
+                            <i class="fa fa-eye-slash" id="toggleNewPassword"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Update Password</button>
+        </form>
+    </div>
     <footer class="bg-dark text-white text-center p-3 mt-5">
         <p>© 2024 Library. All rights reserved.</p>
     </footer>
@@ -220,6 +233,31 @@ $member = $member_result->fetch_assoc();
             } else {
                 input.attr("type", "password");
             }
+        });
+
+        $("#updatePasswordForm").on("submit", function(event){
+            event.preventDefault();
+
+            var form = this;
+
+            $.ajax({
+                url: "php/updatePassword.php",
+                type: "post",
+                data: $(this).serialize(),
+                success: function(response){
+                    if(response.trim() == "success"){
+                        $("#successPassword").show();
+                        $("#errorPassword").hide();
+                        form.reset();
+                    }else{
+                        $("#errorPassword").html(response).show();
+                        $("#successPassword").hide();
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error(textStatus, errorThrown);
+                }
+            });
         });
     });
     </script>
