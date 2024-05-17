@@ -1,4 +1,15 @@
 <?php
+/*
+ * This file serves as the login page for a library management system.
+ * It checks if a user is already logged in and redirects them to the appropriate 
+ * dashboard (admin or member) based on their role.
+ * The HTML section sets up the page layout, including Bootstrap for styling and 
+ * FontAwesome for icon support.
+ * The page includes a login form for users to enter their email and password.
+ * JavaScript/jQuery is used to handle form submission, toggle password visibility, 
+ * and provide real-time feedback on success or error.
+ */
+
 session_start();
 if (isset($_SESSION['email'])) {
   if($_SESSION['admin']){

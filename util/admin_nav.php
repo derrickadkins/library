@@ -1,3 +1,25 @@
+<?php
+/*
+ * This excerpt is responsible for generating the navigation bar for the admin interface.
+ * 
+ * It uses Bootstrap's navbar component to create a responsive navigation bar with a 
+ * brand and a toggle button for smaller screens.
+ * The navigation bar contains links to the admin dashboard, the add book page, and the 
+ * add member page.
+ * 
+ * The script uses PHP to dynamically add the 'active' class to the navigation item that 
+ * corresponds to the current page.
+ * This is done by comparing the basename of the current script (obtained from `
+ * $_SERVER['PHP_SELF']`) with the names of the admin pages.
+ * 
+ * The navigation bar also contains a link to the logout script, which is aligned to the 
+ * right using Bootstrap's 'ml-auto' class.
+ * 
+ * The excerpt ends with script tags that include jQuery, Popper.js, and Bootstrap's 
+ * JavaScript file.
+ * These are necessary for the responsive behavior of the navigation bar.
+ */
+?>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="#">Library</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">

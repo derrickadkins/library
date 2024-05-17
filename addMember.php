@@ -1,4 +1,13 @@
 <?php
+/*
+ * This file serves as the Add Member page for a library management system.
+ * It ensures that a user is logged in and is an admin before granting access.
+ * The HTML section sets up the page layout, including Bootstrap for styling.
+ * The page includes a form for adding a new member to the library system.
+ * JavaScript/jQuery is used to handle form submission and provide real-time 
+ * feedback on success or error.
+ */
+
 session_start();
 if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
     header('Location: ../index.php');

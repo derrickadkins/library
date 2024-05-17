@@ -1,4 +1,15 @@
 <?php
+/*
+ * This file serves as the Admin Dashboard page for a library management system.
+ * It ensures that a user is logged in and is an admin before granting access.
+ * The HTML section sets up the page layout, including Bootstrap and FontAwesome for 
+ * styling, and DataTables for enhanced table functionality.
+ * The page displays an admin dashboard with sections for viewing and managing books, 
+ * members, and generating reports.
+ * JavaScript/jQuery is used to handle dynamic content loading, form submissions for 
+ * adding/deleting books and members, and updating passwords in real-time.
+ */
+
 session_start();
 if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
     header('Location: ../index.php');

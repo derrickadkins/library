@@ -1,3 +1,18 @@
+<?php
+/*
+ * This excerpt is responsible for generating the options for a select input field for 
+ * US states.
+ * 
+ * Each option is an HTML <option> element with a value attribute and a text node.
+ * The value attribute is the two-letter postal abbreviation for the state, and the 
+ * text node is the full name of the state.
+ * 
+ * The options are listed in alphabetical order by state name.
+ * 
+ * When the user selects an option, the value of the select input field will be the 
+ * two-letter postal abbreviation for the selected state.
+ */
+?>
 <option value="AL">Alabama</option>
 <option value="AK">Alaska</option>
 <option value="AZ">Arizona</option>

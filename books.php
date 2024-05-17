@@ -1,5 +1,15 @@
 <?php
-// start session to access session objects and redirect to home if email is not set or if admin
+/*
+ * This file serves as the Browse Books page for a library management system.
+ * It ensures that a user is logged in and is not an admin before granting access.
+ * The script retrieves the member's name from the session for use in the page.
+ * The HTML section sets up the page layout, including Bootstrap for styling and 
+ * DataTables for enhanced table functionality.
+ * The page displays a list of books available for checkout.
+ * JavaScript/jQuery is used to handle dynamic content loading and form submissions 
+ * for checking out books in real-time.
+ */
+
 session_start();
 if (!isset($_SESSION['email']) || $_SESSION['admin'] === true) {
     header('Location: ../index.php');

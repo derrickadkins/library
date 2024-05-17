@@ -1,4 +1,21 @@
 <?php
+/*
+ * This script is used to fetch all the books from the library system.
+ * It includes the db_connect.php file to establish a connection with the database.
+ * 
+ * The script prepares an SQL statement to select all columns from the Books table, 
+ * along with additional columns for who checked out the book, when it was checked 
+ * out, who checked it in, and when it was checked in.
+ * These additional columns are calculated using subqueries and CASE statements.
+ * 
+ * The subquery in the FROM clause (LatestCheckouts) gets the latest checkout record 
+ * for each book.
+ * The CASE statements then determine the values of the CheckedOutBy, CheckedOutDate, 
+ * CheckedInBy, and CheckedInDate columns based on whether the book is currently 
+ * checked out or not.
+ * 
+ * The script then executes the SQL statement and fetches the result.
+ */
 
 include '../db/db_connect.php';
 

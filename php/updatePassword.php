@@ -1,4 +1,35 @@
 <?php
+/*
+ * This script is used to update a user's password in the library system.
+ * It starts a session and includes the db_connect.php file to establish a connection 
+ * with the database.
+ * 
+ * The script checks if the request method is POST.
+ * If it is, it retrieves the email of the logged-in user from the session and the old 
+ * and new passwords from the POST data.
+ * 
+ * It then prepares an SQL statement to select the password of the user with the given 
+ * email from the Members table.
+ * The script binds the email to the SQL statement and executes it.
+ * It fetches the result and stores the user's details in an associative array.
+ * 
+ * The script verifies the old password against the hashed password stored in the 
+ * database.
+ * If the old password is correct, it hashes the new password and prepares an SQL 
+ * statement to update the password of the user with the given email in the Members 
+ * table.
+ * The script binds the hashed new password and the email to the SQL statement and 
+ * executes it.
+ * If the SQL statement executes successfully, the script outputs "success".
+ * 
+ * If the old password is incorrect, the script outputs "Old password is incorrect.".
+ * 
+ * The script then closes the SQL statement.
+ * If the request method is not POST, the script outputs "Invalid request.".
+ * 
+ * Finally, the script closes the database connection.
+ */
+
 session_start();
 include '../db/db_connect.php';
 

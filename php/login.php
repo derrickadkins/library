@@ -1,4 +1,25 @@
 <?php
+/*
+ * This excerpt is responsible for authenticating a user trying to log in.
+ * 
+ * It first fetches the result of a previously prepared SQL statement that selects 
+ * the user with the given email.
+ * If a user is found, it fetches the user's details and verifies the given password 
+ * against the hashed password stored in the database.
+ * 
+ * If the password is correct, it stores the user's email, person ID, and name in the 
+ * session.
+ * It then checks if the user is an admin by preparing and executing an SQL statement 
+ * that selects the admin with the given email.
+ * If an admin is found, it stores true in the session under 'admin' and outputs "admin".
+ * Otherwise, it stores false in the session under 'admin' and outputs "member".
+ * 
+ * If the password is incorrect, it outputs "Invalid password.".
+ * If no user is found with the given email, it outputs "No user found with that email.".
+ * 
+ * Finally, it closes the SQL statements and the database connection.
+ */
+
 session_start();
 include '../db/db_connect.php';
 

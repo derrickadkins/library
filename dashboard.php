@@ -1,4 +1,17 @@
 <?php
+/*
+ * This file serves as the Member Dashboard page for a library management system.
+ * It ensures that a user is logged in and is not an admin before granting access.
+ * The script includes the database connection file and retrieves member details from the 
+ * database using the logged-in member's email.
+ * The HTML section sets up the page layout, including Bootstrap and FontAwesome for 
+ * styling, and DataTables for enhanced table functionality.
+ * The page displays member details, a list of books checked out by the member, and forms 
+ * for updating profile information and changing the password.
+ * JavaScript/jQuery is used to handle dynamic content loading, form submissions, and 
+ * real-time updates.
+ */
+
 session_start();
 if (!isset($_SESSION['email']) || $_SESSION['admin'] === true) {
     header('Location: ../index.php');

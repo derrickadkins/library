@@ -1,4 +1,27 @@
 <?php
+/*
+ * This script is used to fetch all the books that are currently checked out by the 
+ * logged-in member.
+ * It starts a session and includes the db_connect.php file to establish a connection 
+ * with the database.
+ * 
+ * The script retrieves the email of the logged-in user from the session and fetches 
+ * the user's details from the Members table.
+ * 
+ * It then prepares an SQL statement to select the book ID, title, author, and 
+ * checkout date of all books that are currently checked out by the user.
+ * This is done by joining the Books and Checkouts tables on the book ID and 
+ * filtering for rows where the person ID matches the user's ID and the checked in 
+ * date is null.
+ * 
+ * The script binds the user's ID to the SQL statement and executes it.
+ * It fetches the result and stores each row in an array.
+ * 
+ * The script then outputs the array as a JSON object.
+ * 
+ * Finally, the script closes the SQL statement and the database connection.
+ */
+
 session_start();
 
 include '../db/db_connect.php';

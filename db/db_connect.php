@@ -1,4 +1,5 @@
 <?php
+// Define connection parameters
 $servername = "localhost:3308";
 $username = "dadkins";
 $password = "+ix?O)2UKhao";
