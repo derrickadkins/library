@@ -62,7 +62,7 @@ if (isset($_SESSION['email'])) {
                   </div>
                 </div>
                 <div class="form-group text-center">
-                  <button type="submit" class="btn btn-primary">Login</button>
+                  <button id="loginButton" type="submit" class="btn btn-primary">Login</button>
                 </div>
               </form>
             </div>
@@ -81,25 +81,26 @@ $(document).ready(function(){
   $("form").on("submit", function(event){
     event.preventDefault();
 
+    $("#loginButton").prop("disabled", true);
+
     $.ajax({
       url: 'php/login.php',
       type: 'post',
       data: $(this).serialize(),
       success: function(response){
-        // handle the response from the server
         console.log(response);
         if (response.trim() == "admin") {
           window.location.href = "admin.php";
         } else if (response.trim() == "member") {
           window.location.href = "dashboard.php";
         } else {
-          // display the error message
           $("#error").html(response).show();
+          $("#loginButton").prop("disabled", false);
         }
       },
       error: function(jqXHR, textStatus, errorThrown){
-        // handle any errors
         console.error(textStatus, errorThrown);
+        $("#loginButton").prop("disabled", false);
       }
     });
   });

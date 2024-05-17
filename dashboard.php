@@ -94,7 +94,7 @@ $member = $member_result->fetch_assoc();
                 <label for="phone">Phone Number</label>
                 <input type="text" id="phone" name="phone" class="form-control" value="<?php echo htmlspecialchars($member['Phone']); ?>" required>
             </div>
-            <button type="submit" class="btn btn-primary">Update Profile</button>
+            <button id="updateProfileButton" type="submit" class="btn btn-primary">Update Profile</button>
         </form>
         <hr />
         <h2>Update Password</h2>
@@ -123,7 +123,7 @@ $member = $member_result->fetch_assoc();
                     </div>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary">Update Password</button>
+            <button id="updatePasswordButton" type="submit" class="btn btn-primary">Update Password</button>
         </form>
     </div>
     <footer class="bg-dark text-white text-center p-3 mt-5">
@@ -174,8 +174,8 @@ $member = $member_result->fetch_assoc();
 
                 $("form.checkIn").on("submit", function(event){
                     event.preventDefault();
-
                     var form = $(this);
+                    $(this).find('input[type="submit"]').prop('disabled', true);
 
                     $.ajax({
                     url: 'php/checkInBook.php',
@@ -184,14 +184,16 @@ $member = $member_result->fetch_assoc();
                     success: function(response){
                         console.log(response);
                         if (response.trim() == "success") {
-                            form.hide();
                             form.parent().prev().text("Returned");
+                            form.remove();
                         } else {
                             $("#errorBooks").html(response).show();
+                            $(this).find('input[type="submit"]').prop('disabled', false);
                         }
                     },
                     error: function(jqXHR, textStatus, errorThrown){
                         console.error(textStatus, errorThrown);
+                        $(this).find('input[type="submit"]').prop('disabled', false);
                     }
                     });
                 });
@@ -205,6 +207,8 @@ $member = $member_result->fetch_assoc();
 
         $("#profileForm").on("submit", function(event){
             event.preventDefault();
+            $("#updateProfileButton").prop("disabled", true);
+
             $.ajax({
                 url: "php/updateProfile.php",
                 type: "post",
@@ -217,10 +221,12 @@ $member = $member_result->fetch_assoc();
                     } else {
                         $("#errorProfile").html(response).show();
                         $("#successProfile").hide();
+                        $("#updateProfileButton").prop("disabled", false);
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown){
                     console.error(textStatus, errorThrown);
+                    $("#updateProfileButton").prop("disabled", false);
                 }
             })
         });
@@ -237,8 +243,8 @@ $member = $member_result->fetch_assoc();
 
         $("#updatePasswordForm").on("submit", function(event){
             event.preventDefault();
-
             var form = this;
+            $("#updatePasswordButton").prop("disabled", true);
 
             $.ajax({
                 url: "php/updatePassword.php",
@@ -253,9 +259,11 @@ $member = $member_result->fetch_assoc();
                         $("#errorPassword").html(response).show();
                         $("#successPassword").hide();
                     }
+                    $("#updatePasswordButton").prop("disabled", false);
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     console.error(textStatus, errorThrown);
+                    $("#updatePasswordButton").prop("disabled", false);
                 }
             });
         });

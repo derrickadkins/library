@@ -77,8 +77,8 @@ $name = $_SESSION['name'];
 
                     $("form").on("submit", function(event){
                         event.preventDefault();
-
                         var form = $(this);
+                        $(this).find('input[type="submit"]').prop('disabled', true);
 
                         $.ajax({
                         url: 'php/checkoutBook.php',
@@ -87,14 +87,16 @@ $name = $_SESSION['name'];
                         success: function(response){
                             console.log(response);
                             if (response.trim() == "success") {
-                                form.hide();
                                 form.parent().prev().text("Checked Out by <?php echo $name; ?>");
+                                form.remove();
                             } else {
                                 $("#error").html(response).show();
+                                $(this).find('input[type="submit"]').prop('disabled', false);
                             }
                         },
                         error: function(jqXHR, textStatus, errorThrown){
                             console.error(textStatus, errorThrown);
+                            $(this).find('input[type="submit"]').prop('disabled', false);
                         }
                         });
                     });

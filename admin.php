@@ -104,7 +104,7 @@ if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
                     </div>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary">Update Password</button>
+            <button id="updatePasswordButton" type="submit" class="btn btn-primary">Update Password</button>
         </form>
     </div>
     <footer class="bg-dark text-white text-center p-3 mt-5">
@@ -148,6 +148,7 @@ if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
 
                     var form = $(this);
                     var row = $(this).closest('tr');
+                    $(this).find('input[type="submit"]').prop('disabled', true);
 
                     $.ajax({
                     url: 'php/deleteBook.php',
@@ -159,10 +160,12 @@ if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
                             row.remove();
                         } else {
                             $("#errorBooks").html(response).show();
+                            $(this).find('input[type="submit"]').prop('disabled', false);
                         }
                     },
                     error: function(jqXHR, textStatus, errorThrown){
                         console.error(textStatus, errorThrown);
+                        $(this).find('input[type="submit"]').prop('disabled', false);
                     }
                     });
                 });
@@ -202,6 +205,7 @@ if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
 
                     var form = $(this);
                     var row = $(this).closest('tr');
+                    $(this).find('input[type="submit"]').prop('disabled', true);
 
                     $.ajax({
                     url: 'php/deleteMember.php',
@@ -213,10 +217,12 @@ if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
                             row.remove();
                         } else {
                             $("#errorMembers").html(response).show();
+                            $(this).find('input[type="submit"]').prop('disabled', false);
                         }
                     },
                     error: function(jqXHR, textStatus, errorThrown){
                         console.error(textStatus, errorThrown);
+                        $(this).find('input[type="submit"]').prop('disabled', false);
                     }
                     });
                 });
@@ -252,6 +258,7 @@ if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
             event.preventDefault();
 
             var form = this;
+            $("#updatePasswordButton").prop("disabled", true);
 
             $.ajax({
                 url: "php/updatePassword.php",
@@ -266,9 +273,11 @@ if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
                         $("#errorPassword").html(response).show();
                         $("#successPassword").hide();
                     }
+                    $("#updatePasswordButton").prop("disabled", false);
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     console.error(textStatus, errorThrown);
+                    $("#updatePasswordButton").prop("disabled", false);
                 }
             });
         });

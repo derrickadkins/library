@@ -48,6 +48,7 @@ $(document).ready(function() {
         event.preventDefault();
 
         var form = this;
+        $("button").prop("disabled", true);
 
         $.ajax({
             url: "php/insertBook.php",
@@ -62,9 +63,11 @@ $(document).ready(function() {
                     $("#error").html(response).show();
                     $("#success").hide();
                 }
+                $("button").prop("disabled", false);
             },
             error: function(jqXHR, textStatus, errorThrown){
                 console.error(textStatus, errorThrown);
+                $("button").prop("disabled", false);
             }
         });
     });
