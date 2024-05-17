@@ -23,8 +23,7 @@ This is a web portal for managing and accessing library books. It provides featu
 To get a local copy up and running, follow these steps:
 
 1. Clone the repository
-
-````git clone https://github.com/derrickadkins/library.git
+```git clone https://github.com/derrickadkins/library.git
 2. Install dependencies
 ```npm install
 3. Start the server
