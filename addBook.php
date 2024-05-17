@@ -47,6 +47,8 @@ $(document).ready(function() {
     $("form").on("submit", function(event){
         event.preventDefault();
 
+        var form = this;
+
         $.ajax({
             url: "php/insertBook.php",
             type: "post",
@@ -55,6 +57,7 @@ $(document).ready(function() {
                 if(response.trim() == "success"){
                     $("#success").show();
                     $("#error").hide();
+                    form.reset();
                 }else{
                     $("#error").html(response).show();
                     $("#success").hide();
