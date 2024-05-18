@@ -62,7 +62,7 @@ if ($isUpdate) {
     } elseif ($isAdmin) {
         $date = DateTime::createFromFormat('Y-m-d H:i:s', $book['CheckedInDate']);
         $formattedDate = $date->format('m/d/y');
-        $status = 'Available: Last checked in by ' . $book['CheckedInBy'] . ' on ' . $formattedDate;
+        $status = 'Available: Checked In by ' . $book['CheckedInBy'] . ' on ' . $formattedDate;
     } else {
         $status = 'Available';
     }

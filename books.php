@@ -44,6 +44,7 @@ $name = $_SESSION['name'];
                     <tr>
                         <th>Author</th>
                         <th>Title</th>
+                        <th>ISBN</th>
                         <th>Status</th>
                         <!-- <th>Action</th> -->
                     </tr>
@@ -75,6 +76,7 @@ $name = $_SESSION['name'];
                         var tr = $("<tr id='" + book.RecID + "'>");
                         tr.append($("<td>").text(book.Author));
                         tr.append($("<td>").text(book.Title));
+                        tr.append($("<td>").text(book.ISBN));
                         
                         if (book.CheckedOutBy) {
                             tr.append($("<td>").text('Checked Out by ' + book.CheckedOutBy));
