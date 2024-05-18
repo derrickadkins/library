@@ -34,6 +34,10 @@ if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
         tr:hover .delete-book, tr:hover .delete-member {
             display: block;
         }
+
+        tr:hover td {
+            background-color: #99ccff;
+        }
     </style>
 </head>
 <body>
@@ -55,7 +59,7 @@ if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
                         <th>Title</th>
                         <th>ISBN</th>
                         <th>Status</th>
-                        <th>Action</th>
+                        <!-- <th>Action</th> -->
                     </tr>
                 </thead>
                 <tbody>
@@ -79,7 +83,7 @@ if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
                         <th>Name</th>
                         <th>Email</th>
                         <th>Phone</th>
-                        <th>Action</th>
+                        <!-- <th>Action</th> -->
                     </tr>
                 </thead>
                 <tbody>
@@ -149,15 +153,15 @@ if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
                     if (book.CheckedOutBy) {
                         tr.append($("<td>").text('Checked Out by ' + book.CheckedOutBy + " on " + new Date(book.CheckedOutDate).toLocaleDateString('en-US', {month: '2-digit', day: '2-digit', year: '2-digit'})));
                     } else if (book.CheckedInBy) {
-                        tr.append($("<td>").text('Checked In by ' + book.CheckedInBy + " on " + new Date(book.CheckedInDate).toLocaleDateString('en-US', {month: '2-digit', day: '2-digit', year: '2-digit'})));
+                        tr.append($("<td>").text('Available: Checked In by ' + book.CheckedInBy + " on " + new Date(book.CheckedInDate).toLocaleDateString('en-US', {month: '2-digit', day: '2-digit', year: '2-digit'})));
                     } else {
                         tr.append($("<td>").text('Available'));
                     }
 
-                    var deleteForm = $("<form>", {class: "delete-book", display: "none"});
-                    deleteForm.append($("<input>", {type: "hidden", name: "book_id", value: book.BookID}));
-                    deleteForm.append($("<button>", {type: "submit", name: "delete", class: "btn btn-danger"}).text("Delete"));
-                    tr.append($("<td>").append(deleteForm));
+                    // var deleteForm = $("<form>", {class: "delete-book", display: "none"});
+                    // deleteForm.append($("<input>", {type: "hidden", name: "book_id", value: book.BookID}));
+                    // deleteForm.append($("<button>", {type: "submit", name: "delete", class: "btn btn-danger"}).text("Delete"));
+                    // tr.append($("<td>").append(deleteForm));
 
                     tbody.append(tr);
                 });
@@ -191,7 +195,7 @@ if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
 
                 $("tr.bookRow").on("click", function(event){
                     var recId = $(this).attr('id');
-                    window.location.href = "book.php?RecID=" + recId;
+                    window.location.href = "book.php?id=" + recId;
                 });
 
                 $("#booksTable").DataTable();
@@ -216,10 +220,10 @@ if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
                     tr.append($("<td>").text(member.Email));
                     tr.append($("<td>").text(member.Phone));
 
-                    var deleteForm = $("<form>", {class: "delete-member", display: "none"});
-                    deleteForm.append($("<input>", {type: "hidden", name: "person_id", value: member.PersonID}));
-                    deleteForm.append($("<button>", {type: "submit", name: "delete", class: "btn btn-danger"}).text("Delete"));
-                    tr.append($("<td>").append(deleteForm));
+                    // var deleteForm = $("<form>", {class: "delete-member", display: "none"});
+                    // deleteForm.append($("<input>", {type: "hidden", name: "person_id", value: member.PersonID}));
+                    // deleteForm.append($("<button>", {type: "submit", name: "delete", class: "btn btn-danger"}).text("Delete"));
+                    // tr.append($("<td>").append(deleteForm));
 
                     tbody.append(tr);
                 });

@@ -37,6 +37,11 @@ $member = $member_result->fetch_assoc();
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.25/datatables.min.css"/>
+    <style>
+        tr:hover td {
+            background-color: #99ccff;
+        }
+    </style>
 </head>
 <body>
     <?php include "util/nav.php"; ?>
@@ -48,11 +53,12 @@ $member = $member_result->fetch_assoc();
             <table class="table table-striped">
                 <thead>
                     <tr>
+                        <th>Author</th>
                         <th>Title</th>
                         <th>Checked Out Date</th>
                         <th>Due Date</th>
                         <th>Status</th>
-                        <th>Action</th>
+                        <!-- <th>Action</th> -->
                     </tr>
                 </thead>
                 <tbody id="checkoutsTable">
@@ -150,7 +156,7 @@ $member = $member_result->fetch_assoc();
     </footer>
     <script>
     $(document).ready(function() {
-        console.log(<?php echo json_encode($member); ?>);
+        // console.log(<?php echo json_encode($member); ?>);
         $("#state").val("<?php echo $member['State']; ?>");
 
         $.ajax({
@@ -160,7 +166,8 @@ $member = $member_result->fetch_assoc();
             success: function(checkouts) {
                 $("tbody").empty();
                 $.each(checkouts, function(i, checkout) {
-                    var tr = $("<tr>");
+                    var tr = $("<tr id='" + checkout.RecID + "'>");
+                    tr.append($("<td>").text(checkout.Author));
                     tr.append($("<td>").text(checkout.Title));
                     tr.append($("<td>").text(new Date(checkout.CheckedOutDate).toLocaleDateString('en-US', {month: '2-digit', day: '2-digit', year: '2-digit'})));
                     var dueDate = new Date(new Date(checkout.CheckedOutDate).setDate(new Date(checkout.CheckedOutDate).getDate() + 7));
@@ -179,16 +186,21 @@ $member = $member_result->fetch_assoc();
                     }
                     tr.append($("<td>").text(status));
 
-                    if (!checkout.CheckedInDate) {
-                        var form = $("<form>", {class: "checkIn"});
-                        form.append($("<input>", {type: "hidden", name: "book_id", value: checkout.BookID}));
-                        form.append($("<input>", {type: "submit", value: "Check In", class: "btn btn-primary"}));
-                        tr.append($("<td>").append(form));
-                    } else {
-                        tr.append($("<td>"));
-                    }
+                    // if (!checkout.CheckedInDate) {
+                    //     var form = $("<form>", {class: "checkIn"});
+                    //     form.append($("<input>", {type: "hidden", name: "book_id", value: checkout.BookID}));
+                    //     form.append($("<input>", {type: "submit", value: "Check In", class: "btn btn-primary"}));
+                    //     tr.append($("<td>").append(form));
+                    // } else {
+                    //     tr.append($("<td>"));
+                    // }
 
                     $("tbody").append(tr);
+                });
+
+                $("tr").on("click", function(event){
+                    var recId = $(this).attr('id');
+                    window.location.href = "book.php?id=" + recId;
                 });
 
                 $("form.checkIn").on("submit", function(event){

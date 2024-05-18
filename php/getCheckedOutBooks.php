@@ -37,7 +37,7 @@ $member = $member_result->fetch_assoc();
 $person_id = $member['PersonID'];
 
 $books_sql = "
-    SELECT Books.BookID, Books.Title, Books.Author, Checkouts.CheckedOutDate
+    SELECT Books.RecID, Books.Title, Books.Author, Checkouts.CheckedOutDate
     FROM Books
     INNER JOIN Checkouts ON Books.BookID = Checkouts.BookID
     WHERE Checkouts.PersonID = ? AND Checkouts.CheckedInDate IS NULL

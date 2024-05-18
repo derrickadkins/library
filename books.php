@@ -27,6 +27,11 @@ $name = $_SESSION['name'];
     <link rel="icon" href="icon.png" type="image/x-icon" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.25/datatables.min.css"/>
+    <style>
+        tr:hover td {
+            background-color: #99ccff;
+        }
+    </style>
 </head>
 <body>
     <?php include "util/nav.php"; ?>
@@ -40,7 +45,7 @@ $name = $_SESSION['name'];
                         <th>Author</th>
                         <th>Title</th>
                         <th>Status</th>
-                        <th>Action</th>
+                        <!-- <th>Action</th> -->
                     </tr>
                 </thead>
                 <tbody>
@@ -73,13 +78,13 @@ $name = $_SESSION['name'];
                         
                         if (book.CheckedOutBy) {
                             tr.append($("<td>").text('Checked Out by ' + book.CheckedOutBy));
-                            tr.append($("<td>"));
+                            // tr.append($("<td>"));
                         } else {
                             tr.append($("<td>").text('Available'));
-                            var form = $("<form>");
-                            form.append($("<input>", {type: "hidden", name: "book_id", value: book.BookID}));
-                            form.append($("<button>", {type: "submit", name: "checkout", class: "btn btn-primary"}).text("Check Out"));
-                            tr.append($("<td>").append(form));
+                            // var form = $("<form>");
+                            // form.append($("<input>", {type: "hidden", name: "book_id", value: book.BookID}));
+                            // form.append($("<button>", {type: "submit", name: "checkout", class: "btn btn-primary"}).text("Check Out"));
+                            // tr.append($("<td>").append(form));
                         }
         
                         tbody.append(tr);
@@ -91,7 +96,7 @@ $name = $_SESSION['name'];
                         $(this).find('input[type="submit"]').prop('disabled', true);
 
                         $.ajax({
-                        url: 'php/checkoutBook.php',
+                        url: 'php/checkOutBook.php',
                         type: 'post',
                         data: form.serialize(),
                         success: function(response){
@@ -113,7 +118,7 @@ $name = $_SESSION['name'];
 
                     $("tr").on("click", function(event){
                         var recId = $(this).attr('id');
-                        window.location.href = "book.php?RecID=" + recId;
+                        window.location.href = "book.php?id=" + recId;
                     });
 
                     $("table").DataTable();

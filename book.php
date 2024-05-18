@@ -8,13 +8,14 @@ if (!isset($_SESSION['email'])) {
 include "db/db_connect.php";
 
 $isAdmin = $_SESSION['admin'] === true;
-$isUpdate = isset($_GET['RecID']);
+$isUpdate = isset($_GET['id']);
 
 if ($isUpdate) {
-    $recId = $_GET['RecID'];
+    $recId = $_GET['id'];
     $recId = mysqli_real_escape_string($conn, $recId);
     $query = "
-        SELECT Books.*, 
+        SELECT Books.*,
+            LatestCheckouts.PersonID,
             CASE 
                 WHEN LatestCheckouts.PersonID IS NULL THEN ''
                 WHEN CheckedInDate IS NULL THEN Members.Name 
@@ -50,22 +51,27 @@ if ($isUpdate) {
     ";
     $result = mysqli_query($conn, $query);
     $book = mysqli_fetch_assoc($result);
+
+    $isAvailable = empty($book['CheckedOutBy']);
+    $canCheckIn = !$isAvailable && $book['PersonID'] == $_SESSION['person_id'];
     
-    if (!empty($book['CheckedOutBy'])) {
+    if (!$isAvailable) {
         $date = DateTime::createFromFormat('Y-m-d H:i:s', $book['CheckedOutDate']);
         $formattedDate = $date->format('m/d/y');
         $status = 'Checked Out by ' . $book['CheckedOutBy'] . ' on ' . $formattedDate;
-    } elseif (!empty($book['CheckedInBy']) && $isAdmin) {
+    } elseif ($isAdmin) {
         $date = DateTime::createFromFormat('Y-m-d H:i:s', $book['CheckedInDate']);
         $formattedDate = $date->format('m/d/y');
         $status = 'Available: Last checked in by ' . $book['CheckedInBy'] . ' on ' . $formattedDate;
     } else {
         $status = 'Available';
     }
-    $isAvailable = empty($book['CheckedOutBy']);
 
     // echo '<pre>';
     // var_dump($book);
+    // var_dump($_SESSION['person_id']);
+    // var_dump($book['PersonID'] != $_SESSION['person_id']);
+    // var_dump($isAvailable && $book['PersonID'] != $_SESSION['person_id']);
     // echo '</pre>';
 } else if (!$isAdmin){
     header('Location: ../index.php');
@@ -84,6 +90,10 @@ if ($isUpdate) {
 </head>
 <body>
     <?php include $isAdmin ? "util/admin_nav.php" : "util/nav.php"; ?>
+    <input id="username" type="hidden" value="<?php echo $_SESSION['name']; ?>">
+    <input id="isAdmin" type="hidden" value="<?php echo $isAdmin; ?>">
+    <input id="isUpdate" type="hidden" value="<?php echo $isUpdate; ?>">
+    <input id="isAvailable" type="hidden" value="<?php echo $isAvailable; ?>">
     <div class="container mt-5">
         <h1><?php echo $isUpdate ? $book['Title'] : "Add Book"; ?></h1>
         <div id="error" class="alert alert-danger" role="alert" style="display: none;"></div>
@@ -104,24 +114,37 @@ if ($isUpdate) {
                 <input type="text" id="isbn" name="isbn" class="form-control" value="<?php if($isUpdate) echo $book['ISBN']; ?>" required <?php if(!$isAdmin) echo "disabled"; ?>>
             </div>
             <?php if ($isUpdate): ?>
-                <input type="hidden" id="book_id" name="book_id" value="<?php echo $book['BookID'] ?>">
+                <input type="hidden" name="book_id" value="<?php echo $book['BookID'] ?>">
                 <div class="form-group">
                     <label for="status">Status</label>
                     <input type="text" id="status" name="status" class="form-control" value="<?php if($isUpdate) echo $status; ?>" required disabled>
                 </div>
-                <button id="checkoutButton" class="btn btn-primary" <?php if(!$isAvailable) echo "disabled"; ?>>Check Out</button>
             <?php endif; ?>
             <?php if ($isAdmin): ?>
-                <button type="submit" class="btn btn-primary"><?php echo $isUpdate ? "Update" : "Add Book"; ?></button>
+                <input type="submit" class="btn btn-primary" value="<?php echo $isUpdate ? "Update" : "Add Book"; ?>">
             <?php endif; ?>
         </form>
     </div>
-    <?php if ($isAdmin): ?>
+    <?php if ($isUpdate): ?>
+        <div class="container mt-3">
+            <form class="checkBookForm">
+                <input type="hidden" name="book_id" value="<?php echo $book['BookID'] ?>">
+                <input id="checkOutButton" type="submit" class="btn btn-primary" value="Check Out" <?php if(!$isAvailable) echo "disabled"; ?>>
+            </form>
+        </div>
+        <div class="container mt-3">
+            <form class="checkBookForm">
+                <input type="hidden" name="book_id" value="<?php echo $book['BookID'] ?>">
+                <input id="checkInButton" type="submit" class="btn btn-primary" value="Check In" <?php if(!$canCheckIn) echo "disabled"; ?>>
+            </form>
+        </div>
+    <?php endif; ?>
+    <?php if ($isAdmin && $isUpdate): ?>
         <div class="container mt-5">
             <h2>Delete Book</h2>
             <form id="deleteForm">
                 <input type="hidden" id="book_id" name="book_id" value="<?php echo $book['BookID'] ?>">
-                <button type="submit" id="deleteButton" class="btn btn-danger">Delete</button>
+                <input type="submit" id="deleteButton" class="btn btn-danger" value="Delete">
             </form>
         </div>
     <?php endif; ?>
@@ -132,6 +155,48 @@ if ($isUpdate) {
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
 $(document).ready(function() {
+    $(".checkBookForm").on("submit", function(event){
+        event.preventDefault();
+        $(this).find('input[type="submit"]').prop('disabled', true);
+
+        var isAdmin = $("#isAdmin").val() == "1";
+        var isAvailable = $("#isAvailable").val() == "1";
+        var checkBookUrl = isAvailable ? "php/checkOutBook.php" : "php/checkInBook.php";
+
+        $.ajax({
+        url: checkBookUrl,
+        type: 'post',
+        data: $(this).serialize(),
+        success: function(response){
+            // console.log(response);
+            if (response.trim() == "success") {
+                var today = new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' });
+
+                var status = "Checked Out by " + $("#username").val() + " on " + today;
+                if (!isAvailable && isAdmin) status = "Available: Checked In by " + $("#username").val() + " on " + today;
+                else if (!isAvailable) status = "Available";
+
+                console.log(status);
+
+                $("#status").val(status);
+                var disabledButtonID = isAvailable ? "#checkInButton" : "#checkOutButton";
+                $(disabledButtonID).prop("disabled", false);
+                $("#isAvailable").val(isAvailable ? "0" : "1");
+            } else if (response.trim() == "checked out") {
+                alert("The book is already checked out.");
+                location.reload();
+            } else {
+                $("#error").html(response).show();
+                $(this).find('input[type="submit"]').prop('disabled', false);
+            }
+        },
+        error: function(jqXHR, textStatus, errorThrown){
+            console.error(textStatus, errorThrown);
+            $(this).find('input[type="submit"]').prop('disabled', false);
+        }
+        });
+    });
+
     $("#deleteForm").on("submit", function(event){
         event.preventDefault();
 
@@ -194,8 +259,10 @@ $(document).ready(function() {
         var form = this;
         $("button").prop("disabled", true);
 
+        var bookActionUrl = $("#isUpdate").val() == "1" ? "php/updateBook.php" : "php/addBook.php";
+
         $.ajax({
-            url: "php/<?php echo $isUpdate ? "updateBook" : "addBook"; ?>.php",
+            url: bookActionUrl,
             type: "post",
             data: $(this).serialize(),
             success: function(response){
