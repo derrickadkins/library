@@ -39,7 +39,6 @@ $name = $_SESSION['name'];
                     <tr>
                         <th>Author</th>
                         <th>Title</th>
-                        <th>ISBN</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
@@ -68,10 +67,9 @@ $name = $_SESSION['name'];
                     tbody.empty();
         
                     $.each(books, function(i, book) {
-                        var tr = $("<tr>");
+                        var tr = $("<tr id='" + book.RecID + "'>");
                         tr.append($("<td>").text(book.Author));
                         tr.append($("<td>").text(book.Title));
-                        tr.append($("<td>").text(book.ISBN));
                         
                         if (book.CheckedOutBy) {
                             tr.append($("<td>").text('Checked Out by ' + book.CheckedOutBy));
@@ -111,6 +109,11 @@ $name = $_SESSION['name'];
                             $(this).find('input[type="submit"]').prop('disabled', false);
                         }
                         });
+                    });
+
+                    $("tr").on("click", function(event){
+                        var recId = $(this).attr('id');
+                        window.location.href = "book.php?RecID=" + recId;
                     });
 
                     $("table").DataTable();

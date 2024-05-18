@@ -142,7 +142,7 @@ if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
                 tbody.empty();
 
                 $.each(books, function(i, book) {
-                    var tr = $("<tr>");
+                    var tr = $("<tr id='" + book.RecID + "' class='bookRow'>");
                     tr.append($("<td>").text(book.Author));
                     tr.append($("<td>").text(book.Title));
                     tr.append($("<td>").text(book.ISBN));
@@ -187,6 +187,11 @@ if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
                         $(this).find('input[type="submit"]').prop('disabled', false);
                     }
                     });
+                });
+
+                $("tr.bookRow").on("click", function(event){
+                    var recId = $(this).attr('id');
+                    window.location.href = "book.php?RecID=" + recId;
                 });
 
                 $("#booksTable").DataTable();

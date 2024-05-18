@@ -6,7 +6,10 @@
  * The script checks if the request method is POST and if the book_id is set in the POST data.
  * If it is, it retrieves the book ID from the POST data.
  * 
- * It then prepares an SQL statement to delete the row from the Books table where the BookID matches the given book ID.
+ * It then checks if the book is currently checked out.
+ * If the book is checked out, it automatically checks in the book.
+ * 
+ * After that, it prepares an SQL statement to delete the row from the Books table where the BookID matches the given book ID.
  * 
  * The script binds the book ID to the SQL statement and executes it.
  * If the SQL statement executes successfully, the script outputs "success". Otherwise, it outputs an error message.
@@ -18,10 +21,27 @@
 include '../db/db_connect.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['book_id'])) {
-    $book_id = $_POST['book_id'];
+    $bookId = $_POST['BookID']; // Get the book ID from the POST parameters
 
-    $stmt = $conn->prepare("DELETE FROM Books WHERE BookID = ?");
-    $stmt->bind_param("s", $book_id);
+    // Check if the book is currently checked out
+    $checkout_sql = "SELECT * FROM Checkouts WHERE BookID = ? AND CheckedInDate IS NULL";
+    $stmt = $conn->prepare($checkout_sql);
+    $stmt->bind_param("i", $bookId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        // Check in the book
+        $checkin_sql = "UPDATE Checkouts SET CheckedInDate = NOW() WHERE BookID = ? AND CheckedInDate IS NULL";
+        $stmt = $conn->prepare($checkin_sql);
+        $stmt->bind_param("i", $bookId);
+        $stmt->execute();
+    }
+
+    // Delete the book
+    $delete_sql = "DELETE FROM Books WHERE BookID = ?";
+    $stmt = $conn->prepare($delete_sql);
+    $stmt->bind_param("i", $bookId);
 
     if ($stmt->execute()) {
         echo "success";
