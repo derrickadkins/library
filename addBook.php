@@ -56,6 +56,33 @@ $(document).ready(function() {
     $("form").on("submit", function(event){
         event.preventDefault();
 
+        // Get form fields
+        var author = $('#author').val();
+        var title = $('#title').val();
+        var isbn = $('#isbn').val();
+
+        // Author Regex: only letters, spaces, hyphens, and apostrophes.
+        var authorRegex = /^[a-zA-Z\s\-']{1,100}$/;
+        // Title Regex: only letters, numbers, spaces, and common punctuation marks.
+        var titleRegex = /^[a-zA-Z0-9\s\-:',.?!]{1,200}$/;
+        // ISBN Regex: Validates both ISBN-10 and ISBN-13 formats, including hyphens and spaces
+        var isbnRegex = /((978[\--– ])?[0-9][0-9\--– ]{10}[\--– ][0-9xX])|((978)?[0-9]{9}[0-9Xx])/;
+
+        // Validate form fields, show error message and return on first failure
+        if (!authorRegex.test(author)) {
+            $("#error").html("Please enter a valid author name.").show();
+            $("#success").hide();
+            return;
+        }else if (!titleRegex.test(title)) {
+            $("#error").html("Please enter a valid book title.").show();
+            $("#success").hide();
+            return;
+        }else if (!isbnRegex.test(isbn)) {
+            $("#error").html("Please enter a valid ISBN-10 or ISBN-13.").show();
+            $("#success").hide();
+            return;
+        }
+
         var form = this;
         $("button").prop("disabled", true);
 

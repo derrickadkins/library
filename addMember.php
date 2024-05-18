@@ -83,8 +83,51 @@ if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
 $(document).ready(function() {
+    function validateInput(regex, input, errorMsg) {
+        if (!regex.test(input)) {
+            $("#error").html(errorMsg).show();
+            $("#success").hide();
+            return false;
+        }
+        return true;
+    }
+
     $("form").on("submit", function(event){
         event.preventDefault();
+
+        // Get form fields
+        var name = $("#name").val();
+        var email = $("#email").val();
+        var street1 = $("#street1").val();
+        var street2 = $("#street2").val();
+        var city = $("#city").val();
+        var zip = $("#zipcode").val();
+        var phone = $("#phone").val();
+        var password = $("#password").val();
+
+        // Name Regex: only letters, spaces, hyphens, and apostrophes.
+        var nameRegex = /^[a-zA-Z\s\-']{1,100}$/;
+        // Email Regex: standard email format.
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        // City Regex: only letters and spaces.
+        var cityRegex = /^[a-zA-Z\s]{1,100}$/;
+        // Zip Code Regex: 5 digits or 5 digits followed by a hyphen and 4 digits (US zip code format).
+        var zipRegex = /^\d{5}(-\d{4})?$/;
+        // Phone Number Regex: 10 digits, allows for common formatting characters like spaces, hyphens, parentheses.
+        var phoneRegex = /^\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$/;
+        // Password Regex: at least 8 characters long, contains an uppercase letter, a lowercase letter, and a number.
+        var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
+
+        if (
+            !validateInput(nameRegex, name, "Please enter a valid name.") ||
+            !validateInput(emailRegex, email, "Please enter a valid email address.") ||
+            !validateInput(cityRegex, city, "Please enter a valid city.") ||
+            !validateInput(zipRegex, zip, "Please enter a valid zip code.") ||
+            !validateInput(phoneRegex, phone, "Please enter a valid phone number.") ||
+            !validateInput(passwordRegex, password, "Please enter a valid password.")
+        ) {
+            return;
+        }
 
         var form = this;
         $("button").prop("disabled", true);
