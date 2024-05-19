@@ -24,7 +24,7 @@ $isAdmin = $_SESSION['admin'] === true;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title><?php if($isAdmin) echo "Admin"; ?> Dashboard</title>
     <link rel="icon" href="icon.png" type="image/x-icon" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.25/datatables.min.css"/>
@@ -117,7 +117,9 @@ $isAdmin = $_SESSION['admin'] === true;
                     window.location.href = "book.php?id=" + recId;
                 });
 
-                $("table").DataTable();
+                $("table").DataTable({
+                    order: [[3, 'desc']]
+                });
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.error(textStatus, errorThrown);

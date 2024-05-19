@@ -229,7 +229,7 @@ $(document).ready(function() {
 
         var form = $(this);
         var profileForm = this;
-        var profileUrl = isUpdate ? "php/updateProfile.php" : "php/insertMember.php";
+        var profileUrl = isUpdate ? "php/updateProfile.php" : "php/addMember.php";
         form.find('input[type="submit"]').prop('disabled', true);
         
         $.ajax({
