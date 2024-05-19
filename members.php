@@ -22,7 +22,7 @@ if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
 </head>
 <body>
     <?php include "util/nav.php"; ?>
-    <div class="container mt-5">
+    <div class="container mt-3">
         <h1>Members</h1>
         <div id="error" class="alert alert-danger" role="alert" style="display: none;"></div>
         <div class="table-responsive">
@@ -69,7 +69,7 @@ if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
                         tbody.append(tr);
                     });
 
-                    $("tr td").on("click", function(event){
+                    $("tr:has(td)").on("click", function(event){
                         var recId = $(this).attr('id');
                         window.location.href = "profile.php?id=" + recId;
                     });

@@ -102,7 +102,7 @@ if ($isUpdate) {
     <?php if($isUpdate): ?>
         <input id="isAvailable" type="hidden" value="<?php echo $isAvailable; ?>">
     <?php endif; ?>
-    <div class="container mt-5">
+    <div class="container mt-3">
         <h1><?php echo $isUpdate ? $book['Title'] : "Add Book"; ?></h1>
         <div id="error" class="alert alert-danger" role="alert" style="display: none;"></div>
         <div id="success" class="alert alert-success" role="alert" style="display: none;">
@@ -166,7 +166,8 @@ if ($isUpdate) {
 $(document).ready(function() {
     $(".checkBookForm").on("submit", function(event){
         event.preventDefault();
-        $(this).find('input[type="submit"]').prop('disabled', true);
+        var form = $(this);
+        form.find('input[type="submit"]').prop('disabled', true);
 
         var isAdmin = $("#isAdmin").val() == "1";
         var isAvailable = $("#isAvailable").val() == "1";
@@ -196,12 +197,12 @@ $(document).ready(function() {
                 location.reload();
             } else {
                 $("#error").html(response).show();
-                $(this).find('input[type="submit"]').prop('disabled', false);
+                form.find('input[type="submit"]').prop('disabled', false);
             }
         },
         error: function(jqXHR, textStatus, errorThrown){
             console.error(textStatus, errorThrown);
-            $(this).find('input[type="submit"]').prop('disabled', false);
+            form.find('input[type="submit"]').prop('disabled', false);
         }
         });
     });
@@ -214,7 +215,8 @@ $(document).ready(function() {
             return;
         }
 
-        $(this).find('input[type="submit"]').prop('disabled', true);
+        var form = $(this);
+        form.find('input[type="submit"]').prop('disabled', true);
 
         $.ajax({
         url: 'php/deleteBook.php',
@@ -222,15 +224,15 @@ $(document).ready(function() {
         data: $(this).serialize(),
         success: function(response){
             if (response.trim() == "success") {
-                window.location.href = "admin.php";
+                window.location.href = "dashboard.php";
             } else {
                 $("#errorBooks").html(response).show();
-                $(this).find('input[type="submit"]').prop('disabled', false);
+                form.find('input[type="submit"]').prop('disabled', false);
             }
         },
         error: function(jqXHR, textStatus, errorThrown){
             console.error(textStatus, errorThrown);
-            $(this).find('input[type="submit"]').prop('disabled', false);
+            form.find('input[type="submit"]').prop('disabled', false);
         }
         });
     });
@@ -265,10 +267,11 @@ $(document).ready(function() {
             return;
         }
 
-        var form = this;
-        $(this).find('input[type="submit"]').prop('disabled', true);
-
-        var bookActionUrl = $("#isUpdate").val() == "1" ? "php/updateBook.php" : "php/addBook.php";
+        var form = $(this);
+        var bookForm = this;
+        var isUpdate = $("#isUpdate").val() == "1";
+        form.find('input[type="submit"]').prop('disabled', true);
+        var bookActionUrl = isUpdate ? "php/updateBook.php" : "php/addBook.php";
 
         $.ajax({
             url: bookActionUrl,
@@ -278,16 +281,16 @@ $(document).ready(function() {
                 if(response.trim() == "success"){
                     $("#success").show();
                     $("#error").hide();
-                    <?php if(!$isUpdate) echo "form.reset();"; ?>
+                    if(isUpdate) bookForm.reset();
                 }else{
                     $("#error").html(response).show();
                     $("#success").hide();
                 }
-                $(this).find('input[type="submit"]').prop('disabled', false);
+                form.find('input[type="submit"]').prop('disabled', false);
             },
             error: function(jqXHR, textStatus, errorThrown){
                 console.error(textStatus, errorThrown);
-                $(this).find('input[type="submit"]').prop('disabled', false);
+                form.find('input[type="submit"]').prop('disabled', false);
             }
         });
     });

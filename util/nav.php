@@ -20,7 +20,7 @@
  */
 ?>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand"><img src="icon.png" style="width: 30px; height: 30px;"/> Library</a>
+    <a class="navbar-brand" href="dashboard.php"><img src="icon.png" style="width: 30px; height: 30px;"/> Library</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -37,7 +37,7 @@
             <li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'books.php' ? 'active' : ''; ?>">
                 <a class="nav-link" href="books.php">Books</a>
             </li>
-            <li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'profile.php' ? 'active' : ''; ?>">
+            <li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'profile.php' && isset($_GET['id']) && $_SESSION['rec_id'] == $_GET['id'] ? 'active' : ''; ?>">
                 <a class="nav-link" href="profile.php?id=<?php echo $_SESSION['rec_id']; ?>">Profile</a>
             </li>
         </ul>

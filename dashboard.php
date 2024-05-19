@@ -37,9 +37,12 @@ $isAdmin = $_SESSION['admin'] === true;
 <body>
     <?php include "util/nav.php"; ?>
     <input type="hidden" id="isAdmin" value="<?php echo $isAdmin; ?>">
-    <div class="container mt-5">
+    <div class="container mt-3">
         <h1 class="display-4">Welcome, <?php echo htmlspecialchars($_SESSION['name']); ?></h1>
-        <h2>Checked Out Books</h2>
+        <?php if($isAdmin): ?>
+            <h1>Admin Dashboard</h1>
+        <?php endif; ?>
+        <h2 class="mt-3">Checked Out Books</h2>
         <div id="errorBooks" class="alert alert-danger" role="alert" style="display: none;"></div>
         <div class="table-responsive">
             <table class="table table-striped">
@@ -62,6 +65,13 @@ $isAdmin = $_SESSION['admin'] === true;
         <div class="mt-3">
             <a href="books.php" class="btn btn-primary">Checkout New Book</a>
         </div>
+        <?php if($isAdmin): ?>
+            <hr />
+            <h2>Checkouts Report</h2>
+            <div class="mb-3">
+                <a href="php/downloadCheckoutsReport.php" class="btn btn-primary">Download</a>
+            </div>
+        <?php endif; ?>
     </div>
     <footer class="bg-dark text-white text-center p-3 mt-5">
         <p>© 2024 Library. All rights reserved.</p>
@@ -102,7 +112,7 @@ $isAdmin = $_SESSION['admin'] === true;
                     $("tbody").append(tr);
                 });
 
-                $("tr td").on("click", function(event){
+                $("tr:has(td)").on("click", function(event){
                     var recId = $(this).attr('id');
                     window.location.href = "book.php?id=" + recId;
                 });

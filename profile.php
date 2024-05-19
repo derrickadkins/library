@@ -50,7 +50,7 @@ if ($isUpdate) {
     <?php if($isUpdate): ?>
         <input id="memberState" type="hidden" value="<?php echo $member['State']; ?>">
     <?php endif; ?>
-    <div class="container mt-5">
+    <div class="container mt-3">
         <h1><?php echo $isUpdate ? "Update " : "Add "; ?>Profile</h1>
         <div id="error" class="alert alert-danger" role="alert" style="display: none;"></div>
         <div id="success" class="alert alert-success" role="alert" style="display: none;">
@@ -70,7 +70,7 @@ if ($isUpdate) {
             </div>
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email" class="form-control" value="<?php if($isUpdate) echo $member['Email']; ?>" required>
+                <input type="email" id="email" name="email" class="form-control" value="<?php if($isUpdate) echo $member['Email']; ?>" required <?php if($isUpdate) echo "disabled"; ?>>
             </div>
             <div class="form-group">
                 <label for="street1">Street</label>
@@ -227,9 +227,10 @@ $(document).ready(function() {
             }
         }
 
-        var form = this;
+        var form = $(this);
+        var profileForm = this;
         var profileUrl = isUpdate ? "php/updateProfile.php" : "php/insertMember.php";
-        $(this).find('input[type="submit"]').prop('disabled', true);
+        form.find('input[type="submit"]').prop('disabled', true);
         
         $.ajax({
             url: profileUrl,
@@ -239,16 +240,16 @@ $(document).ready(function() {
                 if(response.trim() == "success"){
                     $("#success").show();
                     $("#error").hide();
-                    if(!isUpdate) form.reset();
+                    if(!isUpdate) profileForm.reset();
                 }else{
                     $("#error").html(response).show();
                     $("#success").hide();
                 }
-                $(this).find('input[type="submit"]').prop('disabled', false);
+                form.find('input[type="submit"]').prop('disabled', false);
             },
             error: function(jqXHR, textStatus, errorThrown){
                 console.error(textStatus, errorThrown);
-                $(this).find('input[type="submit"]').prop('disabled', false);
+                form.find('input[type="submit"]').prop('disabled', false);
             }
         });
     });
@@ -328,7 +329,7 @@ $(document).ready(function() {
         }
 
         var form = $(this);
-        $(this).find('input[type="submit"]').prop('disabled', true);
+        form.find('input[type="submit"]').prop('disabled', true);
 
         $.ajax({
         url: 'php/deleteMember.php',
@@ -337,15 +338,15 @@ $(document).ready(function() {
         success: function(response){
             // console.log(response);
             if (response.trim() == "success") {
-                window.location.href = "admin.php";
+                window.location.href = "dashboard.php";
             } else {
                 $("#errorMembers").html(response).show();
-                $(this).find('input[type="submit"]').prop('disabled', false);
+                form.find('input[type="submit"]').prop('disabled', false);
             }
         },
         error: function(jqXHR, textStatus, errorThrown){
             console.error(textStatus, errorThrown);
-            $(this).find('input[type="submit"]').prop('disabled', false);
+            form.find('input[type="submit"]').prop('disabled', false);
         }
         });
     });

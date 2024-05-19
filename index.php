@@ -95,9 +95,7 @@ $(document).ready(function(){
       data: $(this).serialize(),
       success: function(response){
         console.log(response);
-        if (response.trim() == "admin") {
-          window.location.href = "admin.php";
-        } else if (response.trim() == "member") {
+        if (response.trim() == "success") {
           window.location.href = "dashboard.php";
         } else {
           $("#error").html(response).show();
