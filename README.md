@@ -36,19 +36,34 @@ This is a web portal for managing and accessing library books. It provides featu
   
   ![delete_book](https://github.com/derrickadkins/library/assets/11668198/84ede89c-45d8-4e78-bcae-6080efb7e7cb)
 
+### Admins can download a report of all currently checked out books
+
+  ![download_report](https://github.com/derrickadkins/library/assets/11668198/8192507d-ed0e-49ac-a44b-5210a78f8434)
+
+### Dynamic pages provide context based actions
+
+| Admin view | Member view |
+|:----------:|:-----------:|
+| <img src="https://github.com/derrickadkins/library/assets/11668198/03c701f2-7cfd-4916-a9b3-ad80c6f960bf" style="width: 100%;"/> | <img src="https://github.com/derrickadkins/library/assets/11668198/d0b4ce4e-446d-42df-8a24-671d4e372f60" style="width: 70%;"/> |
+
 ### For Members
 
 - Browse available books
-- Reserve books for pickup
+- Check a book in and out
 - View currently borrowed books
-- Renew borrowed books
+- See who a book is checked out by and when they checked it out
+- Update profile and password
 
 ### For Administrators
 
 - Add new books to the library
 - Remove books from the library
+- Update books in the library
 - View all currently borrowed books
-- Manage member accounts  
+- Create new profiles
+- Update existing profiles
+- Delete other profiles
+- Download checked out report
 
 ## Getting Started
 
