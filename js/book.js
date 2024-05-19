@@ -106,8 +106,8 @@ $(document).ready(function () {
     var title = $("#title").val();
     var isbn = $("#isbn").val();
 
-    // Author Regex: only letters, spaces, hyphens, and apostrophes.
-    var authorRegex = /^[a-zA-Z\s\-']{1,100}$/;
+    // Author Regex: only letters, spaces, hyphens, apostrophes, and periods.
+    var authorRegex = /^[a-zA-Z\s\-'.]{1,100}$/;
     // Title Regex: only letters, numbers, spaces, and common punctuation marks.
     var titleRegex = /^[a-zA-Z0-9\s\-:',.?!]{1,200}$/;
     // ISBN Regex: Validates both ISBN-10 and ISBN-13 formats, including hyphens and spaces
