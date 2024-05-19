@@ -1,4 +1,13 @@
 <?php
+/*
+    profile.php
+    Handles user profile operations, including viewing, updating, and adding profile information.
+    
+    This script ensures that a user is logged in and has the appropriate permissions before
+    allowing access to profile operations. If a user is updating their profile, their details
+    are fetched from the database and displayed in a form for editing. If a user is an admin,
+    they can update other users' profiles.
+*/
 session_start();
 if (!isset($_SESSION['email'])) {
     header('Location: ../index.php');

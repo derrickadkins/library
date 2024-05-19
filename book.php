@@ -1,4 +1,15 @@
 <?php
+/*
+    book.php
+    This script serves as the book management page for the library system. It checks if a user is logged in 
+    by verifying the presence of an email in the session. If the user is not logged in, they are redirected to 
+    the index page. It also checks if the user has admin privileges. If an admin is updating a book, the 
+    script retrieves the book's details and its latest checkout status from the database. The HTML section 
+    sets up the page layout, including Bootstrap for styling. It provides forms for adding or updating a book's 
+    details, checking in or out a book, and deleting a book if the user is an admin. JavaScript/jQuery is used 
+    to dynamically handle form submissions and update the page content.
+*/
+
 session_start();
 if (!isset($_SESSION['email'])) {
     header('Location: ../index.php');

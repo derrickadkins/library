@@ -1,6 +1,12 @@
 <?php
 /*
+ * php/book/getBooks.php
  * This script is used to fetch all the books from the library system.
+ * 
+ * It first checks if the user is logged in by verifying the email 
+ * in the session. If the user is not logged in, they are 
+ * redirected to the index page.
+ * 
  * It includes the db_connect.php file to establish a connection with the database.
  * 
  * The script prepares an SQL statement to select all columns from the Books table, 
@@ -16,6 +22,12 @@
  * 
  * The script then executes the SQL statement and fetches the result.
  */
+
+session_start();
+if (!isset($_SESSION['email'])) {
+    header('Location: ../../index.php');
+    exit();
+}
 
 include '../db_connect.php';
 

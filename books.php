@@ -1,14 +1,13 @@
 <?php
 /*
- * This file serves as the Browse Books page for a library management system.
- * It ensures that a user is logged in and is not an admin before granting access.
- * The script retrieves the member's name from the session for use in the page.
- * The HTML section sets up the page layout, including Bootstrap for styling and 
- * DataTables for enhanced table functionality.
- * The page displays a list of books available for checkout.
- * JavaScript/jQuery is used to handle dynamic content loading and form submissions 
- * for checking out books in real-time.
- */
+    books.php
+    This script serves as the books page for the library system. It checks if a user is logged in by
+    verifying the presence of an email in the session. If the user is not logged in, they are redirected to 
+    the index page. The HTML section sets up the page layout, including Bootstrap for styling and DataTables 
+    for enhanced table functionality. The page displays a list of books available in the library, with their 
+    author, title, ISBN, and status. If the logged-in user is an admin, they are provided with an option to 
+    add new books. JavaScript/jQuery is used to dynamically load and handle the data displayed on the page.
+*/
 
 session_start();
 if (!isset($_SESSION['email'])) {

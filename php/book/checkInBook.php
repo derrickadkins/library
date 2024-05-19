@@ -1,6 +1,12 @@
 <?php
 /*
+ * php/book/checkInBook.php
  * This script is used to check in a book in the library system.
+ * 
+ * It first checks if the user is logged in by verifying the email 
+ * in the session. If the user is not logged in, they are 
+ * redirected to the index page.
+ * 
  * It includes the db_connect.php file to establish a connection with the database.
  * 
  * The script checks if the request method is POST. If it is, it retrieves the book ID from the POST data.
@@ -12,6 +18,11 @@
  * The script then closes the SQL statement and the database connection.
  * If the request method is not POST, the script outputs "Invalid request.".
  */
+session_start();
+if (!isset($_SESSION['email'])) {
+    header('Location: ../../index.php');
+    exit();
+}
 
 include "../php/db_connect.php";
 

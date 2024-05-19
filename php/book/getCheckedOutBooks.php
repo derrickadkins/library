@@ -1,7 +1,13 @@
 <?php
 /*
+ * php/book/getCheckedOutBooks.php
  * This script is used to fetch all the books that are currently checked out by the 
  * logged-in member.
+ * 
+ * It first checks if the user is logged in by verifying the email 
+ * in the session. If the user is not logged in, they are 
+ * redirected to the index page.
+ * 
  * It starts a session and includes the db_connect.php file to establish a connection 
  * with the database.
  * 
@@ -22,7 +28,11 @@
  * Finally, the script closes the SQL statement and the database connection.
  */
 
-session_start();
+ session_start();
+ if (!isset($_SESSION['email'])) {
+     header('Location: ../../index.php');
+     exit();
+ }
 
 include '../db_connect.php';
 

@@ -1,23 +1,12 @@
 <?php
 /*
- * This excerpt is responsible for generating the navigation bar for the user interface.
- * 
- * It uses Bootstrap's navbar component to create a responsive navigation bar with a 
- * brand and a toggle button for smaller screens.
- * The navigation bar contains links to the dashboard and the books page.
- * 
- * The script uses PHP to dynamically add the 'active' class to the navigation item that 
- * corresponds to the current page.
- * This is done by comparing the basename of the current script (obtained from `
- * $_SERVER['PHP_SELF']`) with the names of the pages.
- * 
- * The navigation bar also contains a link to the logout script, which is aligned to the 
- * right using Bootstrap's 'ml-auto' class.
- * 
- * The excerpt ends with script tags that include jQuery, Popper.js, and Bootstrap's 
- * JavaScript file.
- * These are necessary for the responsive behavior of the navigation bar.
- */
+    nav.php
+    This script serves as the navigation bar for the library system. It includes links to different sections 
+    of the application, such as the dashboard, members (for admins), books, and the user's profile. The 
+    navigation bar highlights the active page based on the current URL. It also includes a sign-out link 
+    for logging out of the application. The navigation bar is styled using Bootstrap, and the script includes 
+    the necessary Bootstrap and jQuery scripts for responsive behavior and interactivity.
+*/
 ?>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="dashboard.php"><img src="icon.png" style="width: 30px; height: 30px;"/> Library</a>

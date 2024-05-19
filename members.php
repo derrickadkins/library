@@ -1,4 +1,14 @@
 <?php
+/*
+    members.php
+    Displays a list of all library members and provides an interface for admins to add new member profiles.
+    
+    This script ensures that a user is logged in and has admin privileges before granting access to the page.
+    The HTML section sets up the page layout, including Bootstrap for styling and DataTables for enhanced 
+    table functionality. The members list is dynamically populated using JavaScript/jQuery, which handles 
+    fetching member data from the server and updating the table content.
+*/
+
 session_start();
 if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
     header('Location: ../index.php');

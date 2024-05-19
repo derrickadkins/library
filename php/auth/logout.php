@@ -1,5 +1,6 @@
 <?php
 /*
+ * php/auth/logout.php
  * This script is used to log out a user from the library system.
  * 
  * It starts a session, unsets all session variables, and destroys the session.

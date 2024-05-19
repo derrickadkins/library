@@ -1,4 +1,8 @@
 <?php
+/*
+    php/db_connect.php
+*/
+
 // Define connection parameters
 $servername = "localhost:3308";
 $username = "dadkins";

@@ -1,6 +1,12 @@
 <?php
 /*
+ * php/downloadCheckoutsReport.php
  * This script is used to download a report of all the books that are currently checked out in the library system.
+ * 
+ * It first checks if the user is logged in and has admin privileges by verifying the email 
+ * and admin status in the session. If the user is not an admin or not logged in, they are 
+ * redirected to the index page.
+ * 
  * It includes the db_connect.php file to establish a connection with the database.
  * 
  * The script prepares an SQL statement to select the title, author, ISBN, name of the member who checked out the 
@@ -13,6 +19,12 @@
  * 
  * After all the data has been outputted, the script closes the file pointer and the database connection.
  */
+
+session_start();
+if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
+    header('Location: ../index.php');
+    exit();
+}
 
 include 'db_connect.php';
 

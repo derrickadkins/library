@@ -1,6 +1,12 @@
 <?php
 /*
+ * php/member/updateProfile.php
  * This script is used to update a user's profile in the library system.
+ * 
+ * It first checks if the user is logged in by verifying the email 
+ * in the session. If the user is not logged in, they are 
+ * redirected to the index page.
+ * 
  * It starts a session and includes the db_connect.php file to establish a connection 
  * with the database.
  * 
@@ -23,6 +29,11 @@
  */
 
 session_start();
+if (!isset($_SESSION['email'])) {
+    header('Location: ../../index.php');
+    exit();
+}
+
 include '../db_connect.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {

@@ -1,6 +1,12 @@
 <?php
 /*
+ * php/book/deleteBook.php
  * This script is used to delete a book from the library system.
+ * 
+ * It first checks if the user is logged in and has admin privileges by verifying the email 
+ * and admin status in the session. If the user is not an admin or not logged in, they are 
+ * redirected to the index page.
+ * 
  * It includes the db_connect.php file to establish a connection with the database.
  * 
  * The script checks if the request method is POST and if the book_id is set in the POST data.
@@ -17,6 +23,12 @@
  * The script then closes the SQL statement and the database connection.
  * If the request method is not POST or the book_id is not set in the POST data, the script outputs "Invalid request.".
  */
+
+session_start();
+if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
+    header('Location: ../../index.php');
+    exit();
+}
 
 include '../db_connect.php';
 

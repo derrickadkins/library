@@ -1,14 +1,12 @@
 <?php
 /*
- * This file serves as the login page for a library management system.
- * It checks if a user is already logged in and redirects them to the appropriate 
- * dashboard (admin or member) based on their role.
- * The HTML section sets up the page layout, including Bootstrap for styling and 
- * FontAwesome for icon support.
- * The page includes a login form for users to enter their email and password.
- * JavaScript/jQuery is used to handle form submission, toggle password visibility, 
- * and provide real-time feedback on success or error.
- */
+    index.php
+    This script serves as the landing page for the library system. It checks if a user is already logged in
+    by verifying the presence of an email in the session. If the user is logged in, they are redirected to 
+    the dashboard. The page includes a login form for users to enter their email and password to access the 
+    library system. Bootstrap and FontAwesome are used for styling the page and enhancing the user interface. 
+    JavaScript/jQuery is used for handling dynamic behavior on the page.
+*/
 
 session_start();
 if (isset($_SESSION['email'])) {

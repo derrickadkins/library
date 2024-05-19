@@ -1,6 +1,12 @@
 <?php
 /*
+ * php/member/getMembers.php
  * This script is used to fetch all the members from the library system.
+ * 
+ * It first checks if the user is logged in and has admin privileges by verifying the email 
+ * and admin status in the session. If the user is not an admin or not logged in, they are 
+ * redirected to the index page.
+ * 
  * It includes the db_connect.php file to establish a connection with the database.
  * 
  * The script prepares an SQL statement to select all columns from the Members table.
@@ -12,6 +18,12 @@
  * 
  * Finally, the script closes the database connection.
  */
+
+session_start();
+if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
+    header('Location: ../../index.php');
+    exit();
+}
 
 include '../db_connect.php';
 
