@@ -281,7 +281,7 @@ $(document).ready(function() {
                 if(response.trim() == "success"){
                     $("#success").show();
                     $("#error").hide();
-                    if(isUpdate) bookForm.reset();
+                    if(!isUpdate) bookForm.reset();
                 }else{
                     $("#error").html(response).show();
                     $("#success").hide();
