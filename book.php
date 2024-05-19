@@ -51,6 +51,12 @@ if ($isUpdate) {
     ";
     $result = mysqli_query($conn, $query);
     $book = mysqli_fetch_assoc($result);
+    $conn->close();
+
+    if ($book === null) {
+        header('Location: ../index.php');
+        exit();
+    }
 
     $isAvailable = empty($book['CheckedOutBy']);
     $canCheckIn = !$isAvailable && $book['PersonID'] == $_SESSION['person_id'];
@@ -89,11 +95,13 @@ if ($isUpdate) {
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <?php include $isAdmin ? "util/admin_nav.php" : "util/nav.php"; ?>
+    <?php include "util/nav.php"; ?>
     <input id="username" type="hidden" value="<?php echo $_SESSION['name']; ?>">
     <input id="isAdmin" type="hidden" value="<?php echo $isAdmin; ?>">
     <input id="isUpdate" type="hidden" value="<?php echo $isUpdate; ?>">
-    <input id="isAvailable" type="hidden" value="<?php echo $isAvailable; ?>">
+    <?php if($isUpdate): ?>
+        <input id="isAvailable" type="hidden" value="<?php echo $isAvailable; ?>">
+    <?php endif; ?>
     <div class="container mt-5">
         <h1><?php echo $isUpdate ? $book['Title'] : "Add Book"; ?></h1>
         <div id="error" class="alert alert-danger" role="alert" style="display: none;"></div>
@@ -124,30 +132,31 @@ if ($isUpdate) {
                 <input type="submit" class="btn btn-primary" value="<?php echo $isUpdate ? "Update" : "Add Book"; ?>">
             <?php endif; ?>
         </form>
+        <?php if ($isUpdate): ?>
+            <div class="mt-3">
+                <form class="checkBookForm">
+                    <input type="hidden" name="book_id" value="<?php echo $book['BookID'] ?>">
+                    <input id="checkOutButton" type="submit" class="btn btn-primary" value="Check Out" <?php if(!$isAvailable) echo "disabled"; ?>>
+                </form>
+            </div>
+            <div class="mt-3">
+                <form class="checkBookForm">
+                    <input type="hidden" name="book_id" value="<?php echo $book['BookID'] ?>">
+                    <input id="checkInButton" type="submit" class="btn btn-primary" value="Check In" <?php if(!$canCheckIn) echo "disabled"; ?>>
+                </form>
+            </div>
+        <?php endif; ?>
+        <?php if ($isAdmin && $isUpdate): ?>
+            <hr />
+            <div class="mt-3">
+                <h2>Delete Book</h2>
+                <form id="deleteForm">
+                    <input type="hidden" id="book_id" name="book_id" value="<?php echo $book['BookID'] ?>">
+                    <input type="submit" id="deleteButton" class="btn btn-danger" value="Delete">
+                </form>
+            </div>
+        <?php endif; ?>
     </div>
-    <?php if ($isUpdate): ?>
-        <div class="container mt-3">
-            <form class="checkBookForm">
-                <input type="hidden" name="book_id" value="<?php echo $book['BookID'] ?>">
-                <input id="checkOutButton" type="submit" class="btn btn-primary" value="Check Out" <?php if(!$isAvailable) echo "disabled"; ?>>
-            </form>
-        </div>
-        <div class="container mt-3">
-            <form class="checkBookForm">
-                <input type="hidden" name="book_id" value="<?php echo $book['BookID'] ?>">
-                <input id="checkInButton" type="submit" class="btn btn-primary" value="Check In" <?php if(!$canCheckIn) echo "disabled"; ?>>
-            </form>
-        </div>
-    <?php endif; ?>
-    <?php if ($isAdmin && $isUpdate): ?>
-        <div class="container mt-5">
-            <h2>Delete Book</h2>
-            <form id="deleteForm">
-                <input type="hidden" id="book_id" name="book_id" value="<?php echo $book['BookID'] ?>">
-                <input type="submit" id="deleteButton" class="btn btn-danger" value="Delete">
-            </form>
-        </div>
-    <?php endif; ?>
     <footer class="bg-dark text-white text-center p-3 mt-5">
         <p>© 2024 Library. All rights reserved.</p>
     </footer>
@@ -257,7 +266,7 @@ $(document).ready(function() {
         }
 
         var form = this;
-        $("button").prop("disabled", true);
+        $(this).find('input[type="submit"]').prop('disabled', true);
 
         var bookActionUrl = $("#isUpdate").val() == "1" ? "php/updateBook.php" : "php/addBook.php";
 
@@ -274,11 +283,11 @@ $(document).ready(function() {
                     $("#error").html(response).show();
                     $("#success").hide();
                 }
-                $("button").prop("disabled", false);
+                $(this).find('input[type="submit"]').prop('disabled', false);
             },
             error: function(jqXHR, textStatus, errorThrown){
                 console.error(textStatus, errorThrown);
-                $("button").prop("disabled", false);
+                $(this).find('input[type="submit"]').prop('disabled', false);
             }
         });
     });

@@ -42,6 +42,7 @@ if ($result->num_rows > 0) {
         $_SESSION['email'] = $user['Email'];
         $_SESSION['person_id'] = $user['PersonID'];
         $_SESSION['name'] = $user['Name'];
+        $_SESSION['rec_id'] = $user['RecID'];
         
         // Check if the user is an admin
         $admin_sql = "SELECT * FROM Admins WHERE Email = ?";
