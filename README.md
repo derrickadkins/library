@@ -4,29 +4,37 @@ This is a web portal for managing and accessing library books. It provides featu
 
 ## Features
 
-- Secure Authentication
-  ![login](https://github.com/derrickadkins/library/assets/11668198/adefd471-1a7e-46a4-8e3c-d5200aff01dc)
-
-- Search and sort tables
-  ![search_table](https://github.com/derrickadkins/library/assets/11668198/3cf2d78e-13e2-4c21-a146-c341db4e3bbe)
-
-- Select a book from the table to see detailed information
+### Select a book from the table to see detailed information
+  
   ![select_book](https://github.com/derrickadkins/library/assets/11668198/f7c46363-f18d-473a-bc90-54e0b125c5cd)
 
-- Forms use regex to validate input
-  ![regex_validation](https://github.com/derrickadkins/library/assets/11668198/eb35dddd-b2c9-4ba2-9174-b5321ea49c48)
+### Instantly check a book in or out
+  
+  ![check_book](https://github.com/derrickadkins/library/assets/11668198/5a5c39f0-aa70-4b1e-a7f6-5c0dfa960786)
 
-- Admin role grants permission to add, update, and delete books and members
-  ![delete_book](https://github.com/derrickadkins/library/assets/11668198/3a852f86-6dcb-4759-95c1-79f6b1066ec1)
+### Search and sort tables
+  
+  ![search_table](https://github.com/derrickadkins/library/assets/11668198/ce306da2-7497-4dad-ab90-8948717de705)
 
-- Update your profile information
+### Update your profile information
+  
   ![view_update_profile](https://github.com/derrickadkins/library/assets/11668198/ce963b20-5ef2-4cbb-b009-71ff9e0eaf01)
 
-- Updated passwords keeps accounts secure
+### Update passwords to keep accounts secure
+  
   ![update_password](https://github.com/derrickadkins/library/assets/11668198/7a4095fd-d813-4cba-98de-b6d68e99cc30)
+  
+### Secure Authentication
+  
+  ![login](https://github.com/derrickadkins/library/assets/11668198/ccac5965-d553-4ff0-943c-13061d5ca77e)
 
-- Instantly check a book in or out
-  ![check_book](https://github.com/derrickadkins/library/assets/11668198/5a5c39f0-aa70-4b1e-a7f6-5c0dfa960786)
+### Forms use regex to validate input
+  
+  ![regex_validation](https://github.com/derrickadkins/library/assets/11668198/eb35dddd-b2c9-4ba2-9174-b5321ea49c48)
+
+### Admin role grants permission to add, update, and delete books and members
+  
+  ![delete_book](https://github.com/derrickadkins/library/assets/11668198/84ede89c-45d8-4e78-bcae-6080efb7e7cb)
 
 ### For Members
 
