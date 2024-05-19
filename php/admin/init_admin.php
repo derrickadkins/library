@@ -1,5 +1,5 @@
 <?php
-include 'db_connect.php';
+include '../db_connect.php';
 
 // First member details
 $name = 'John Doe';

@@ -47,8 +47,13 @@
 
  * This initialization script ensures that the database is set up with the necessary tables and fields for the library management system to function correctly.
  */
+session_start();
+if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
+    header('Location: ../../index.php');
+    exit();
+}
 
-include 'db_connect.php';
+include '../db_connect.php';
 
 $queries = [
     "DROP TABLE IF EXISTS Admins",

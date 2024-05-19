@@ -1,5 +1,11 @@
 <?php
-include 'db_connect.php';
+session_start();
+if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
+    header('Location: ../../index.php');
+    exit();
+}
+
+include '../db_connect.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
     $action = $_POST['action'];
