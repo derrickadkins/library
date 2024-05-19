@@ -13,7 +13,7 @@
  * If the request method is not POST, the script outputs "Invalid request.".
  */
 
-include "../db/db_connect.php";
+include "../php/db_connect.php";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $bookId = $_POST['book_id'];

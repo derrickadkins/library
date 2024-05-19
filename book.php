@@ -5,7 +5,7 @@ if (!isset($_SESSION['email'])) {
     exit();
 }
 
-include "db/db_connect.php";
+include "php/db_connect.php";
 
 $isAdmin = $_SESSION['admin'] === true;
 $isUpdate = isset($_GET['id']);
