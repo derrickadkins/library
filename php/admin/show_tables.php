@@ -118,16 +118,16 @@ if ($result->num_rows > 0) {
             }
 
             // Add a form row at the end of the table
-            echo "<tr>";
+            echo "<form method='POST' action='show_tables.php'><tr>";
             foreach ($fields as $field_name) {
                 echo "<td><input type='text' name='$field_name'></td>";
             }
-            echo "<td><form method='POST' action='show_tables.php'>";
+            echo "<td>";
             echo "<input type='hidden' name='action' value='add'>";
             echo "<input type='hidden' name='table_name' value='$table'>";
             echo "<input type='submit' value='Add'>";
-            echo "</form></td>";
-            echo "</tr>";
+            echo "</td>";
+            echo "</tr></form>";
 
             echo "</table>";
         } else {
