@@ -1,8 +1,10 @@
 $(document).ready(function () {
+  // If this is an update, set the state select value to the member's state
   if ($("#isUpdate").val() == "1") {
     $("#state").val($("#memberState").val());
   }
 
+  // Function to validate input fields using regex
   function validateInput(regex, input, errorMsg) {
     if (!regex.test(input)) {
       $("#error").html(errorMsg).show();
@@ -12,8 +14,9 @@ $(document).ready(function () {
     return true;
   }
 
+  // Handle form submission for updating or adding a profile
   $("#profileForm").on("submit", function (event) {
-    event.preventDefault();
+    event.preventDefault(); // Prevent the default form submission behavior
 
     // Get form fields
     var name = $("#name").val();
@@ -35,6 +38,7 @@ $(document).ready(function () {
     // Phone Number Regex: 10 digits, allows for common formatting characters like spaces, hyphens, parentheses.
     var phoneRegex = /^\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$/;
 
+    // Validate form fields, show error message and return on first failure
     if (
       !validateInput(nameRegex, name, "Please enter a valid name.") ||
       !validateInput(
@@ -49,8 +53,9 @@ $(document).ready(function () {
       return;
     }
 
-    var isUpdate = $("#isUpdate").val() == "1";
+    var isUpdate = $("#isUpdate").val() == "1"; // Check if this is an update operation
 
+    // If not an update, validate the password
     if (!isUpdate) {
       var password = $("#password").val();
       // Password Regex: at least 8 characters long, contains an uppercase letter, a lowercase letter, and a number.
@@ -70,63 +75,68 @@ $(document).ready(function () {
     var profileForm = this;
     var profileUrl = isUpdate
       ? "php/member/updateProfile.php"
-      : "php/member/addMember.php";
-    form.find('input[type="submit"]').prop("disabled", true);
+      : "php/member/addMember.php"; // Determine the appropriate URL for adding or updating a profile
+    form.find('input[type="submit"]').prop("disabled", true); // Disable the submit button
 
+    // Make an AJAX request to add or update the profile
     $.ajax({
       url: profileUrl,
       type: "post",
-      data: $(this).serialize(),
+      data: $(this).serialize(), // Serialize the form data
       success: function (response) {
         if (response.trim() == "success") {
-          $("#success").show();
+          $("#success").show(); // Show success message
           $("#error").hide();
-          if (!isUpdate) profileForm.reset();
+          if (!isUpdate) profileForm.reset(); // Reset the form if adding a new profile
         } else {
-          $("#error").html(response).show();
+          $("#error").html(response).show(); // Show error message
           $("#success").hide();
         }
-        form.find('input[type="submit"]').prop("disabled", false);
+        form.find('input[type="submit"]').prop("disabled", false); // Re-enable the submit button
       },
       error: function (jqXHR, textStatus, errorThrown) {
-        console.error(textStatus, errorThrown);
-        form.find('input[type="submit"]').prop("disabled", false);
+        console.error(textStatus, errorThrown); // Log any errors
+        form.find('input[type="submit"]').prop("disabled", false); // Re-enable the submit button
       },
     });
   });
 
+  // Toggle password visibility for the password field
   $("#togglePassword").click(function () {
-    $(this).toggleClass("fa-eye fa-eye-slash");
+    $(this).toggleClass("fa-eye fa-eye-slash"); // Toggle the eye icon classes
     var input = $("#password");
     if (input.attr("type") === "password") {
-      input.attr("type", "text");
+      input.attr("type", "text"); // Show the password
     } else {
-      input.attr("type", "password");
+      input.attr("type", "password"); // Hide the password
     }
   });
 
+  // Toggle password visibility for the old password field
   $("#toggleOldPassword").click(function () {
-    $(this).toggleClass("fa-eye fa-eye-slash");
+    $(this).toggleClass("fa-eye fa-eye-slash"); // Toggle the eye icon classes
     var input = $("#old_password");
     if (input.attr("type") === "password") {
-      input.attr("type", "text");
+      input.attr("type", "text"); // Show the old password
     } else {
-      input.attr("type", "password");
+      input.attr("type", "password"); // Hide the old password
     }
   });
 
+  // Toggle password visibility for the new password field
   $("#toggleNewPassword").click(function () {
-    $(this).toggleClass("fa-eye fa-eye-slash");
+    $(this).toggleClass("fa-eye fa-eye-slash"); // Toggle the eye icon classes
     var input = $("#new_password");
     if (input.attr("type") === "password") {
-      input.attr("type", "text");
+      input.attr("type", "text"); // Show the new password
     } else {
-      input.attr("type", "password");
+      input.attr("type", "password"); // Hide the new password
     }
   });
 
+  // Handle form submission for updating the password
   $("#updatePasswordForm").on("submit", function (event) {
-    event.preventDefault();
+    event.preventDefault(); // Prevent the default form submission behavior
 
     var form = this;
     var newPassword = $("#new_password").val();
@@ -139,59 +149,61 @@ $(document).ready(function () {
       return;
     }
 
-    $("#updatePasswordButton").prop("disabled", true);
+    $("#updatePasswordButton").prop("disabled", true); // Disable the submit button
 
+    // Make an AJAX request to update the password
     $.ajax({
       url: "php/member/updatePassword.php",
       type: "post",
-      data: $(this).serialize(),
+      data: $(this).serialize(), // Serialize the form data
       success: function (response) {
         if (response.trim() == "success") {
-          $("#successPassword").show();
+          $("#successPassword").show(); // Show success message
           $("#errorPassword").hide();
-          form.reset();
+          form.reset(); // Reset the form
         } else {
-          $("#errorPassword").html(response).show();
+          $("#errorPassword").html(response).show(); // Show error message
           $("#successPassword").hide();
         }
-        $("#updatePasswordButton").prop("disabled", false);
+        $("#updatePasswordButton").prop("disabled", false); // Re-enable the submit button
       },
       error: function (jqXHR, textStatus, errorThrown) {
-        console.error(textStatus, errorThrown);
-        $("#updatePasswordButton").prop("disabled", false);
+        console.error(textStatus, errorThrown); // Log any errors
+        $("#updatePasswordButton").prop("disabled", false); // Re-enable the submit button
       },
     });
   });
 
+  // Handle form submission for deleting a profile
   $("#deleteForm").on("submit", function (event) {
-    event.preventDefault();
+    event.preventDefault(); // Prevent the default form submission behavior
 
     var confirmDelete = confirm(
       "Are you sure you want to delete this profile? This action is permanent and cannot be undone."
     );
     if (!confirmDelete) {
-      return;
+      return; // Exit if the user cancels the delete action
     }
 
     var form = $(this);
-    form.find('input[type="submit"]').prop("disabled", true);
+    form.find('input[type="submit"]').prop("disabled", true); // Disable the submit button
 
+    // Make an AJAX request to delete the profile
     $.ajax({
       url: "php/member/deleteMember.php",
       type: "post",
-      data: form.serialize(),
+      data: form.serialize(), // Serialize the form data
       success: function (response) {
-        // console.log(response);
         if (response.trim() == "success") {
-          window.location.href = "dashboard.php";
+          window.location.href = "dashboard.php"; // Redirect to the dashboard on success
         } else {
-          $("#errorMembers").html(response).show();
-          form.find('input[type="submit"]').prop("disabled", false);
+          $("#errorMembers").html(response).show(); // Show error message
+          form.find('input[type="submit"]').prop("disabled", false); // Re-enable the submit button
         }
       },
       error: function (jqXHR, textStatus, errorThrown) {
-        console.error(textStatus, errorThrown);
-        form.find('input[type="submit"]').prop("disabled", false);
+        console.error(textStatus, errorThrown); // Log any errors
+        form.find('input[type="submit"]').prop("disabled", false); // Re-enable the submit button
       },
     });
   });
