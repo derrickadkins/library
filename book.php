@@ -97,8 +97,6 @@ if ($isUpdate) {
     <title><?php echo $isUpdate ? $book['Title'] : "Add Book"; ?></title>
     <link rel="icon" href="icon.png" type="image/x-icon" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="js/book.js"></script>
 </head>
 <body>
     <?php include "util/nav.php"; ?>
@@ -166,5 +164,7 @@ if ($isUpdate) {
     <footer class="bg-dark text-white text-center p-3 mt-5">
         <p>© 2024 Library. All rights reserved.</p>
     </footer>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="js/book.js"></script>
 </body>
 </html>
