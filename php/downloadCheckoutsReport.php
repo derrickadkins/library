@@ -14,7 +14,7 @@
  * After all the data has been outputted, the script closes the file pointer and the database connection.
  */
 
-include '../db/db_connect.php';
+include 'db_connect.php';
 
 // Prepare the SQL query
 $sql = "SELECT 

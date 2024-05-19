@@ -21,7 +21,7 @@
  * script outputs "Invalid request.".
  */
 
-include '../db/db_connect.php';
+include '../db_connect.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['author'])) {
     $author = $_POST['author'];

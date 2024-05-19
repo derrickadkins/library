@@ -21,7 +21,7 @@
  */
 
 session_start();
-include '../db/db_connect.php';
+include '../db_connect.php';
 
 $email = $_POST['email'];
 $password = $_POST['password'];

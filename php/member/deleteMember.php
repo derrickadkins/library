@@ -15,7 +15,7 @@
  * If the request method is not POST or the person_id is not set in the POST data, the script outputs "Invalid request.".
  */
 
-include '../db/db_connect.php';
+include '../db_connect.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['person_id'])) {
     $person_id = $_POST['person_id'];

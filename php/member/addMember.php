@@ -24,7 +24,7 @@
  * script outputs "Invalid request.".
  */
 
-include '../db/db_connect.php';
+include '../db_connect.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['name'])) {
     $name = $_POST['name'];

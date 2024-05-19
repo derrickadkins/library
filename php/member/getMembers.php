@@ -13,7 +13,7 @@
  * Finally, the script closes the database connection.
  */
 
-include '../db/db_connect.php';
+include '../db_connect.php';
 
 $sql = "SELECT * FROM Members";
 $result = $conn->query($sql);

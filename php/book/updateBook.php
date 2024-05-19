@@ -1,6 +1,6 @@
 <?php
 session_start();
-include '../db/db_connect.php';
+include '../db_connect.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $bookID = $_POST['book_id'];

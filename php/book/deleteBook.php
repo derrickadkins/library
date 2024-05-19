@@ -18,7 +18,7 @@
  * If the request method is not POST or the book_id is not set in the POST data, the script outputs "Invalid request.".
  */
 
-include '../db/db_connect.php';
+include '../db_connect.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['book_id'])) {
     $bookId = $_POST['book_id']; // Get the book ID from the POST parameters

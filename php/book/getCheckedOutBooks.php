@@ -24,7 +24,7 @@
 
 session_start();
 
-include '../db/db_connect.php';
+include '../db_connect.php';
 
 $isAdmin = $_SESSION['admin'] === true;
 

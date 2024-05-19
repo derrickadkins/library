@@ -17,7 +17,7 @@
  * The script then executes the SQL statement and fetches the result.
  */
 
-include '../db/db_connect.php';
+include '../db_connect.php';
 
 $books_sql = "
     SELECT Books.*, 
