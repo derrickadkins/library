@@ -43,7 +43,7 @@
         </ul>
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-                <a class="nav-link" href="../php/logout.php">Sign Out</a>
+                <a class="nav-link" href="../php/auth/logout.php">Sign Out</a>
             </li>
         </ul>
     </div>

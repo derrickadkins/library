@@ -171,7 +171,7 @@ $(document).ready(function() {
 
         var isAdmin = $("#isAdmin").val() == "1";
         var isAvailable = $("#isAvailable").val() == "1";
-        var checkBookUrl = isAvailable ? "php/checkOutBook.php" : "php/checkInBook.php";
+        var checkBookUrl = isAvailable ? "php/book/checkOutBook.php" : "php/book/checkInBook.php";
 
         $.ajax({
         url: checkBookUrl,
@@ -219,7 +219,7 @@ $(document).ready(function() {
         form.find('input[type="submit"]').prop('disabled', true);
 
         $.ajax({
-        url: 'php/deleteBook.php',
+        url: 'php/book/deleteBook.php',
         type: 'post',
         data: $(this).serialize(),
         success: function(response){
@@ -271,7 +271,7 @@ $(document).ready(function() {
         var bookForm = this;
         var isUpdate = $("#isUpdate").val() == "1";
         form.find('input[type="submit"]').prop('disabled', true);
-        var bookActionUrl = isUpdate ? "php/updateBook.php" : "php/addBook.php";
+        var bookActionUrl = isUpdate ? "php/book/updateBook.php" : "php/book/addBook.php";
 
         $.ajax({
             url: bookActionUrl,

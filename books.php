@@ -66,7 +66,7 @@ if (!isset($_SESSION['email'])) {
     <script>
         $(document).ready(function() {
             $.ajax({
-                url: 'php/getBooks.php',
+                url: 'php/book/getBooks.php',
                 type: 'GET',
                 dataType: 'json',
                 success: function(books) {

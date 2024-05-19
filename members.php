@@ -52,7 +52,7 @@ if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
     <script>
         $(document).ready(function() {
             $.ajax({
-                url: 'php/getMembers.php',
+                url: 'php/member/getMembers.php',
                 type: 'GET',
                 dataType: 'json',
                 success: function(members) {

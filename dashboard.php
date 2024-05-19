@@ -79,7 +79,7 @@ $isAdmin = $_SESSION['admin'] === true;
     <script>
     $(document).ready(function() {
         $.ajax({
-            url: 'php/getCheckedOutBooks.php',
+            url: 'php/book/getCheckedOutBooks.php',
             type: 'GET',
             dataType: 'json',
             success: function(checkouts) {

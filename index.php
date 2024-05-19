@@ -39,7 +39,7 @@ if (isset($_SESSION['email'])) {
             </div>
             <div class="card-body">
               <div id="error" class="alert alert-danger" role="alert" style="display: none;"></div>
-              <form action="php/login.php" method="POST">
+              <form action="php/auth/login.php" method="POST">
                 <div class="form-group">
                   <label for="email">Email</label>
                   <input
@@ -90,7 +90,7 @@ $(document).ready(function(){
     $("#loginButton").prop("disabled", true);
 
     $.ajax({
-      url: 'php/login.php',
+      url: 'php/auth/login.php',
       type: 'post',
       data: $(this).serialize(),
       success: function(response){

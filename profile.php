@@ -229,7 +229,7 @@ $(document).ready(function() {
 
         var form = $(this);
         var profileForm = this;
-        var profileUrl = isUpdate ? "php/updateProfile.php" : "php/addMember.php";
+        var profileUrl = isUpdate ? "php/member/updateProfile.php" : "php/member/addMember.php";
         form.find('input[type="submit"]').prop('disabled', true);
         
         $.ajax({
@@ -299,7 +299,7 @@ $(document).ready(function() {
         $("#updatePasswordButton").prop("disabled", true);
 
         $.ajax({
-            url: "php/updatePassword.php",
+            url: "php/member/updatePassword.php",
             type: "post",
             data: $(this).serialize(),
             success: function(response){
@@ -332,7 +332,7 @@ $(document).ready(function() {
         form.find('input[type="submit"]').prop('disabled', true);
 
         $.ajax({
-        url: 'php/deleteMember.php',
+        url: 'php/member/deleteMember.php',
         type: 'post',
         data: form.serialize(),
         success: function(response){
