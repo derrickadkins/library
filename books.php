@@ -53,7 +53,7 @@ if (!isset($_SESSION['email'])) {
                 </tbody>
             </table>
         </div>
-        <?php if($_SESSION['admins'] === true): ?>
+        <?php if($_SESSION['admin'] === true): ?>
             <div class="mt-3">
                 <a href="book.php" class="btn btn-primary">Add Book</a>
             </div>

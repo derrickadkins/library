@@ -13,26 +13,18 @@
  */
 
 session_start();
-if (!isset($_SESSION['email']) || $_SESSION['admin'] === true) {
+if (!isset($_SESSION['email'])) {
     header('Location: ../index.php');
     exit();
 }
-
-include 'db/db_connect.php';
-
-$email = $_SESSION['email'];
-
-// Fetch member details
-$member_sql = "SELECT * FROM Members WHERE Email='$email'";
-$member_result = $conn->query($member_sql);
-$member = $member_result->fetch_assoc();
+$isAdmin = $_SESSION['admin'] === true;
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Member Dashboard</title>
+    <title>Dashboard</title>
     <link rel="icon" href="icon.png" type="image/x-icon" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.25/datatables.min.css"/>
@@ -44,8 +36,9 @@ $member = $member_result->fetch_assoc();
 </head>
 <body>
     <?php include "util/nav.php"; ?>
+    <input type="hidden" id="isAdmin" value="<?php echo $isAdmin; ?>">
     <div class="container mt-5">
-        <h1 class="display-4">Welcome, <?php echo htmlspecialchars($member['Name']); ?></h1>
+        <h1 class="display-4">Welcome, <?php echo htmlspecialchars($_SESSION['name']); ?></h1>
         <h2>Checked Out Books</h2>
         <div id="errorBooks" class="alert alert-danger" role="alert" style="display: none;"></div>
         <div class="table-responsive">
@@ -54,20 +47,19 @@ $member = $member_result->fetch_assoc();
                     <tr>
                         <th>Author</th>
                         <th>Title</th>
-                        <th>Checked Out Date</th>
+                        <th>Checked Out <?php echo $isAdmin ? "By" : "Date"; ?></th>
                         <th>Due Date</th>
                         <th>Status</th>
-                        <!-- <th>Action</th> -->
                     </tr>
                 </thead>
                 <tbody id="checkoutsTable">
                 <tr id="loadingMessage">
-                    <td colspan="5">Loading books...</td>
+                    <td colspan="5">Loading checkouts...</td>
                 </tr>
                 </tbody>
             </table>
         </div>
-        <div class="mb-3">
+        <div class="mt-3">
             <a href="books.php" class="btn btn-primary">Checkout New Book</a>
         </div>
     </div>
@@ -76,8 +68,6 @@ $member = $member_result->fetch_assoc();
     </footer>
     <script>
     $(document).ready(function() {
-        $("#state").val("<?php echo $member['State']; ?>");
-
         $.ajax({
             url: 'php/getCheckedOutBooks.php',
             type: 'GET',
@@ -88,7 +78,11 @@ $member = $member_result->fetch_assoc();
                     var tr = $("<tr id='" + checkout.RecID + "'>");
                     tr.append($("<td>").text(checkout.Author));
                     tr.append($("<td>").text(checkout.Title));
-                    tr.append($("<td>").text(new Date(checkout.CheckedOutDate).toLocaleDateString('en-US', {month: '2-digit', day: '2-digit', year: '2-digit'})));
+                    if($("#isAdmin").val() == "1"){
+                        tr.append($("<td>").text(checkout.Name));
+                    }else{
+                        tr.append($("<td>").text(new Date(checkout.CheckedOutDate).toLocaleDateString('en-US', {month: '2-digit', day: '2-digit', year: '2-digit'})));
+                    }
                     var dueDate = new Date(new Date(checkout.CheckedOutDate).setDate(new Date(checkout.CheckedOutDate).getDate() + 7));
                     tr.append($("<td>").text(dueDate.toLocaleDateString('en-US', {month: '2-digit', day: '2-digit', year: '2-digit'})));
 
@@ -105,47 +99,12 @@ $member = $member_result->fetch_assoc();
                     }
                     tr.append($("<td>").text(status));
 
-                    // if (!checkout.CheckedInDate) {
-                    //     var form = $("<form>", {class: "checkIn"});
-                    //     form.append($("<input>", {type: "hidden", name: "book_id", value: checkout.BookID}));
-                    //     form.append($("<input>", {type: "submit", value: "Check In", class: "btn btn-primary"}));
-                    //     tr.append($("<td>").append(form));
-                    // } else {
-                    //     tr.append($("<td>"));
-                    // }
-
                     $("tbody").append(tr);
                 });
 
                 $("tr").on("click", function(event){
                     var recId = $(this).attr('id');
                     window.location.href = "book.php?id=" + recId;
-                });
-
-                $("form.checkIn").on("submit", function(event){
-                    event.preventDefault();
-                    var form = $(this);
-                    $(this).find('input[type="submit"]').prop('disabled', true);
-
-                    $.ajax({
-                    url: 'php/checkInBook.php',
-                    type: 'post',
-                    data: form.serialize(),
-                    success: function(response){
-                        console.log(response);
-                        if (response.trim() == "success") {
-                            form.parent().prev().text("Returned");
-                            form.remove();
-                        } else {
-                            $("#errorBooks").html(response).show();
-                            $(this).find('input[type="submit"]').prop('disabled', false);
-                        }
-                    },
-                    error: function(jqXHR, textStatus, errorThrown){
-                        console.error(textStatus, errorThrown);
-                        $(this).find('input[type="submit"]').prop('disabled', false);
-                    }
-                    });
                 });
 
                 $("table").DataTable();

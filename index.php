@@ -12,13 +12,8 @@
 
 session_start();
 if (isset($_SESSION['email'])) {
-  if($_SESSION['admin']){
-    header("Location: admin.php");
-    exit();
-  }else{
-    header("Location: dashboard.php");
-    exit();
-  }
+  header("Location: dashboard.php");
+  exit();
 }
 ?>
 <!DOCTYPE html>

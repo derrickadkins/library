@@ -65,7 +65,7 @@ if ($isUpdate) {
         $date = DateTime::createFromFormat('Y-m-d H:i:s', $book['CheckedOutDate']);
         $formattedDate = $date->format('m/d/y');
         $status = 'Checked Out by ' . $book['CheckedOutBy'] . ' on ' . $formattedDate;
-    } elseif ($isAdmin) {
+    } elseif ($isAdmin && !empty($book['CheckedInDate'])) {
         $date = DateTime::createFromFormat('Y-m-d H:i:s', $book['CheckedInDate']);
         $formattedDate = $date->format('m/d/y');
         $status = 'Available: Checked In by ' . $book['CheckedInBy'] . ' on ' . $formattedDate;

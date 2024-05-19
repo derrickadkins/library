@@ -41,6 +41,9 @@ if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
                 </tbody>
             </table>
         </div>
+        <div class="mt-3">
+            <a href="profile.php" class="btn btn-primary">Add Profile</a>
+        </div>
     </div>
     <footer class="bg-dark text-white text-center p-3 mt-5">
         <p>© 2024 Library. All rights reserved.</p>

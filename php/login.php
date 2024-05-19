@@ -51,16 +51,10 @@ if ($result->num_rows > 0) {
         $admin_stmt->execute();
 
         $admin_result = $admin_stmt->get_result();
-        
-        if ($admin_result->num_rows > 0) {
-            $_SESSION['admin'] = true;
-            echo "admin";
-        } else {
-            $_SESSION['admin'] = false;
-            echo "member";
-        }
-
+        $_SESSION['admin'] = $admin_result->num_rows > 0;
         $admin_stmt->close();
+        
+        echo "success";
     } else {
         echo "Invalid password.";
     }
