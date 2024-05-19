@@ -102,7 +102,7 @@ $isAdmin = $_SESSION['admin'] === true;
                     $("tbody").append(tr);
                 });
 
-                $("tr").on("click", function(event){
+                $("tr td").on("click", function(event){
                     var recId = $(this).attr('id');
                     window.location.href = "book.php?id=" + recId;
                 });
