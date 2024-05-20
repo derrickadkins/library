@@ -7,57 +7,86 @@ if (!isset($_SESSION['email']) || $_SESSION['admin'] !== true) {
 
 include '../db_connect.php';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
-    $action = $_POST['action'];
-    $table = $_POST['table_name'];
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (isset($_POST['action'])) {
+        $action = $_POST['action'];
+        $table = $_POST['table_name'];
 
-    if($action == "delete") {
-        $id_name = $_POST['id_name'];
-        $id = $_POST['record_id'];
+        if($action == "delete") {
+            $id_name = $_POST['id_name'];
+            $id = $_POST['record_id'];
 
-        $delete_sql = "DELETE FROM $table WHERE $id_name = ?";
+            $delete_sql = "DELETE FROM $table WHERE $id_name = ?";
 
-        $stmt = $conn->prepare($delete_sql);
-        $stmt->bind_param("i", $id);
+            $stmt = $conn->prepare($delete_sql);
+            $stmt->bind_param("i", $id);
 
-        if ($stmt->execute()) {
-            echo "Record deleted successfully.";
+            if ($stmt->execute()) {
+                echo "Record deleted successfully.";
+            } else {
+                echo "Error deleting record: " . $stmt->error;
+            }
+
+            $stmt->close();
+        } elseif($action == "add") {
+            // Get the column names for the table
+            $columns_sql = "SHOW COLUMNS FROM $table";
+            $columns_result = $conn->query($columns_sql);
+            $columns = array();
+            while ($column_row = $columns_result->fetch_assoc()) {
+                $columns[] = $column_row['Field'];
+            }
+
+            // Prepare the INSERT statement
+            $placeholders = rtrim(str_repeat('?,', count($columns)), ',');
+            $insert_sql = "INSERT INTO $table (" . implode(',', $columns) . ") VALUES ($placeholders)";
+
+            $stmt = $conn->prepare($insert_sql);
+
+            // Bind the form values to the statement
+            $values = array();
+            $types = str_repeat('s', count($columns));
+            foreach ($columns as $column) {
+                $values[] = $_POST[$column];
+            }
+            $stmt->bind_param($types, ...$values);
+
+            // Execute the statement
+            if ($stmt->execute()) {
+                echo "Record added successfully.";
+            } else {
+                echo "Error adding record: " . $stmt->error;
+            }
+
+            $stmt->close();
+        }
+    } elseif (isset($_POST['custom_query'])) {
+        $custom_query = $_POST['custom_query'];
+        
+        if ($result = $conn->query($custom_query)) {
+            echo "Query executed successfully.<br>";
+            if ($result instanceof mysqli_result) {
+                echo "<table border='1' cellpadding='5' cellspacing='0'>";
+                echo "<tr>";
+                // Print table headers
+                while ($field = $result->fetch_field()) {
+                    echo "<th>" . $field->name . "</th>";
+                }
+                echo "</tr>";
+                // Print table rows
+                while ($row = $result->fetch_assoc()) {
+                    echo "<tr>";
+                    foreach ($row as $cell) {
+                        echo "<td>" . htmlspecialchars($cell) . "</td>";
+                    }
+                    echo "</tr>";
+                }
+                echo "</table>";
+                $result->free();
+            }
         } else {
-            echo "Error deleting record: " . $stmt->error;
+            echo "Error executing query: " . $conn->error;
         }
-
-        $stmt->close();
-    } elseif($action == "add") {
-        // Get the column names for the table
-        $columns_sql = "SHOW COLUMNS FROM $table";
-        $columns_result = $conn->query($columns_sql);
-        $columns = array();
-        while ($column_row = $columns_result->fetch_assoc()) {
-            $columns[] = $column_row['Field'];
-        }
-
-        // Prepare the INSERT statement
-        $placeholders = rtrim(str_repeat('?,', count($columns)), ',');
-        $insert_sql = "INSERT INTO $table (" . implode(',', $columns) . ") VALUES ($placeholders)";
-
-        $stmt = $conn->prepare($insert_sql);
-
-        // Bind the form values to the statement
-        $values = array();
-        $types = str_repeat('s', count($columns));
-        foreach ($columns as $column) {
-            $values[] = $_POST[$column];
-        }
-        $stmt->bind_param($types, ...$values);
-
-        // Execute the statement
-        if ($stmt->execute()) {
-            echo "Record added successfully.";
-        } else {
-            echo "Error adding record: " . $stmt->error;
-        }
-
-        $stmt->close();
     }
 }
 
@@ -140,3 +169,10 @@ if ($result->num_rows > 0) {
 
 $conn->close();
 ?>
+
+<!-- Custom Query Form -->
+<h2>Run Custom Query</h2>
+<form method="POST" action="show_tables.php">
+    <textarea name="custom_query" rows="5" cols="100"></textarea><br>
+    <input type="submit" value="Run Query">
+</form>
