@@ -109,7 +109,7 @@ $(document).ready(function () {
     // Author Regex: only letters, spaces, hyphens, apostrophes, and periods.
     var authorRegex = /^[a-zA-Z\s\-'.]{1,100}$/;
     // Title Regex: only letters, numbers, spaces, and common punctuation marks.
-    var titleRegex = /^[a-zA-Z0-9\s\-:',.?!]{1,200}$/;
+    var titleRegex = /^[a-zA-Z0-9\s\-:',.?!&*()%$#@]{1,200}$/;
     // ISBN Regex: Validates both ISBN-10 and ISBN-13 formats, including hyphens and spaces
     var isbnRegex =
       /((978[\--– ])?[0-9][0-9\--– ]{10}[\--– ][0-9xX])|((978)?[0-9]{9}[0-9Xx])/;
