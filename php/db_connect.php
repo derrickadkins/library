@@ -4,10 +4,10 @@
 */
 
 // Define connection parameters
-$servername = "localhost:3308";
+$servername = "127.0.0.1:3306";
 $username = "dadkins";
 $password = "+ix?O)2UKhao";
-$dbname = "compound_dadkins";
+$dbname = "library_db";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
