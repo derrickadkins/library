@@ -2,6 +2,11 @@
 
 This is a web portal for managing and accessing library books. It provides features for both library members and administrators.
 
+### ERD
+
+  [ERD.pdf](https://github.com/user-attachments/files/18143663/ERD.pdf)
+  ![ERD](https://github.com/user-attachments/assets/c117891a-1d8f-44f2-965f-35b1255aeece)
+
 ## Features
 
 ### Select a book from the table to see detailed information
