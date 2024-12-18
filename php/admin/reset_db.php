@@ -89,12 +89,15 @@ $queries = [
         PersonID INT,
         BookID INT,
         CheckedOutDate DATETIME,
-        CheckedInDate DATETIME
+        CheckedInDate DATETIME,
+        FOREIGN KEY (PersonID) REFERENCES Members(PersonID),
+        FOREIGN Key (BookID) REFERENCES Books(BookID)
     )",
 
     "CREATE TABLE Admins (
         AdminID INT AUTO_INCREMENT PRIMARY KEY,
-        Email VARCHAR(100) UNIQUE NOT NULL
+        PersonID INT UNIQUE NOT NULL,
+        FOREIGN KEY (PersonID) REFERENCES Members(PersonID)
     )",
 
     // Insert data into Books table
@@ -120,7 +123,7 @@ $queries = [
     (4, 'John Smith', '1985-04-02', 'john.smith@example.com', '123 Maple Street', 'Apt 4B', 'Springfield', 'IL', '62701', '555-1234', '$2y$10\$wF28pcQJ2zr4s3LS3NV3tOAttBf1kjDxusWXJ8w8xJgc7SL7Q.11q', '66478ae6756ee')",
 
     // Insert data into Admins table
-    "INSERT INTO Admins (AdminID, Email) VALUES (1, 'john.doe@example.com')",
+    "INSERT INTO Admins (AdminID, PersonID) VALUES (1, 1)",
 ];
 
 foreach ($queries as $query) {

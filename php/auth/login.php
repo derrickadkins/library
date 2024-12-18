@@ -45,9 +45,9 @@ if ($result->num_rows > 0) {
         $_SESSION['rec_id'] = $user['RecID'];
         
         // Check if the user is an admin
-        $admin_sql = "SELECT * FROM Admins WHERE Email = ?";
+        $admin_sql = "SELECT * FROM Admins WHERE PersonID = ?";
         $admin_stmt = $conn->prepare($admin_sql);
-        $admin_stmt->bind_param("s", $email);
+        $admin_stmt->bind_param("s", $_SESSION['person_id']);
         $admin_stmt->execute();
 
         $admin_result = $admin_stmt->get_result();
